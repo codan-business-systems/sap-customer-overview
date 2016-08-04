@@ -8,7 +8,7 @@ sap.ui.define([
 	], function (BaseController, JSONModel, formatter, Filter, FilterOperator, History) {
 		"use strict";
 
-		return BaseController.extend("zcustoview.controller.Worklist", {
+		return BaseController.extend("zcustoview.controller.Search", {
 
 			formatter: formatter,
 
@@ -17,7 +17,7 @@ sap.ui.define([
 			/* =========================================================== */
 
 			/**
-			 * Called when the worklist controller is instantiated.
+			 * Called when the search controller is instantiated.
 			 * @public
 			 */
 			onInit : function () {
@@ -25,7 +25,7 @@ sap.ui.define([
 					iOriginalBusyDelay,
 					oTable = this.byId("table");
 
-				// Put down worklist table's original value for busy indicator delay,
+				// Put down search table's original value for busy indicator delay,
 				// so it can be restored later on. Busy handling on the table is
 				// taken care of by the table itself.
 				iOriginalBusyDelay = oTable.getBusyIndicatorDelay();
@@ -35,21 +35,21 @@ sap.ui.define([
 
 				// Model used to manipulate control states
 				oViewModel = new JSONModel({
-					worklistTableTitle : this.getResourceBundle().getText("worklistTableTitle"),
-					saveAsTileTitle: this.getResourceBundle().getText("worklistViewTitle"),
-					shareOnJamTitle: this.getResourceBundle().getText("worklistViewTitle"),
-					shareSendEmailSubject: this.getResourceBundle().getText("shareSendEmailWorklistSubject"),
-					shareSendEmailMessage: this.getResourceBundle().getText("shareSendEmailWorklistMessage", [location.href]),
+					searchTableTitle : this.getResourceBundle().getText("searchTableTitle"),
+					saveAsTileTitle: this.getResourceBundle().getText("searchViewTitle"),
+					shareOnJamTitle: this.getResourceBundle().getText("searchViewTitle"),
+					shareSendEmailSubject: this.getResourceBundle().getText("shareSendEmailSearchSubject"),
+					shareSendEmailMessage: this.getResourceBundle().getText("shareSendEmailSearchMessage", [location.href]),
 					tableNoDataText : this.getResourceBundle().getText("tableNoDataText"),
 					tableBusyDelay : 0
 				});
-				this.setModel(oViewModel, "worklistView");
+				this.setModel(oViewModel, "searchView");
 
 				// Make sure, busy indication is showing immediately so there is no
 				// break after the busy indication for loading the view's meta data is
 				// ended (see promise 'oWhenMetadataIsLoaded' in AppController)
 				oTable.attachEventOnce("updateFinished", function(){
-					// Restore original busy indicator delay for worklist's table
+					// Restore original busy indicator delay for search's table
 					oViewModel.setProperty("/tableBusyDelay", iOriginalBusyDelay);
 				});
 			},
@@ -68,18 +68,18 @@ sap.ui.define([
 			 * @public
 			 */
 			onUpdateFinished : function (oEvent) {
-				// update the worklist's object counter after the table update
+				// update the search's object counter after the table update
 				var sTitle,
 					oTable = oEvent.getSource(),
 					iTotalItems = oEvent.getParameter("total");
 				// only update the counter if the length is final and
 				// the table is not empty
 				if (iTotalItems && oTable.getBinding("items").isLengthFinal()) {
-					sTitle = this.getResourceBundle().getText("worklistTableTitleCount", [iTotalItems]);
+					sTitle = this.getResourceBundle().getText("searchTableTitleCount", [iTotalItems]);
 				} else {
-					sTitle = this.getResourceBundle().getText("worklistTableTitle");
+					sTitle = this.getResourceBundle().getText("searchTableTitle");
 				}
-				this.getModel("worklistView").setProperty("/worklistTableTitle", sTitle);
+				this.getModel("searchView").setProperty("/searchTableTitle", sTitle);
 			},
 
 			/**
@@ -153,11 +153,11 @@ sap.ui.define([
 			 * @private
 			 */
 			_applySearch: function(oTableSearchState) {
-				var oViewModel = this.getModel("worklistView");
+				var oViewModel = this.getModel("searchView");
 				this._oTable.getBinding("items").filter(oTableSearchState, "Application");
 				// changes the noDataText of the list in case there are no filter results
 				if (oTableSearchState.length !== 0) {
-					oViewModel.setProperty("/tableNoDataText", this.getResourceBundle().getText("worklistNoDataWithSearchText"));
+					oViewModel.setProperty("/tableNoDataText", this.getResourceBundle().getText("searchNoDataWithSearchText"));
 				}
 			}
 

@@ -101,9 +101,9 @@
 			"routes": [
 				{
 					"pattern": "",
-					"name": "worklist",
+					"name": "search",
 					"target": [
-						"worklist"
+						"search"
 					]
 				},
 				{
@@ -115,23 +115,10 @@
 				}
 			],
 			"targets": {
-				"worklist": {
-					"viewName": "Worklist",
-					"viewId": "worklist",
+				"search": {
+					"viewName": "Search",
+					"viewId": "search",
 					"viewLevel": 1
-				},
-				"object": {
-					"viewName": "Object",
-					"viewId": "object",
-					"viewLevel": 2
-				},
-				"objectNotFound": {
-					"viewName": "ObjectNotFound",
-					"viewId": "objectNotFound"
-				},
-				"notFound": {
-					"viewName": "NotFound",
-					"viewId": "notFound"
 				}
 			}
 		}
