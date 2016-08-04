@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edmx:Edmx Version="1.0"
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="Z_CUSTOMER_SRV" xml:lang="en" sap:schema-version="1"
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="Customer" sap:label="Customer" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="customer"/>
+                </Key>
+                <Property Name="customer" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Customer" />
+                <Property Name="title" Type="Edm.String" Nullable="false" MaxLength="15" sap:label="Title" />
+                <Property Name="name1" Type="Edm.String" Nullable="false" MaxLength="35" sap:label="Name" />
+                <Property Name="name2" Type="Edm.String" Nullable="false" MaxLength="35" sap:label="Name 2" />
+                <Property Name="street" Type="Edm.String" Nullable="false" MaxLength="60" sap:label="Street" />
+                <Property Name="city" Type="Edm.String" Nullable="false" MaxLength="25" sap:label="City" />
+                <Property Name="region" Type="Edm.String" Nullable="false" MaxLength="3" sap:label="Region" />
+                <Property Name="postcode" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Postal Code" />
+                <Property Name="country" Type="Edm.String" Nullable="false" MaxLength="3" sap:label="Country" />
+                <Property Name="telephone" Type="Edm.String" Nullable="false" MaxLength="16" sap:label="Telephone 1" />
+                <Property Name="mobile" Type="Edm.String" Nullable="false" MaxLength="16" sap:label="Telephone 2" />
+                <Property Name="email" Type="Edm.String" Nullable="false" MaxLength="241" sap:label="E-Mail Address" />
+            </EntityType>
+            <EntityContainer Name="Z_CUSTOMER_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json">
+                <EntitySet Name="Customers" EntityType="Z_CUSTOMER_SRV.Customer" sap:deletable="false" sap:content-version="1"/>
+            </EntityContainer>
+            <atom:link rel="self" href="https://devepcdn01.unix.local:8080/sap/opu/odata/sap/z_customer_srv/$metadata"
+                xmlns:atom="http://www.w3.org/2005/Atom"/>
+                <atom:link rel="latest-version" href="https://devepcdn01.unix.local:8080/sap/opu/odata/sap/z_customer_srv/$metadata"
+                    xmlns:atom="http://www.w3.org/2005/Atom"/>
+                </Schema>
+            </edmx:DataServices>
+        </edmx:Edmx>
