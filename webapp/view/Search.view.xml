@@ -1,4 +1,4 @@
-<mvc:View controllerName="zcustoview.controller.Search" 
+<mvc:View controllerName="zcustoview.controller.Search" busy="false"
 			xmlns="sap.m" 
 			xmlns:mvc="sap.ui.core.mvc" 
 			xmlns:semantic="sap.m.semantic"
@@ -107,8 +107,8 @@
 				</items>
 			</Table>
 		</semantic:content>
-		<semantic:sendEmailAction>
-			<semantic:SendEmailAction id="shareEmail" press="onShareEmailPress"/>
-		</semantic:sendEmailAction>
+		<semantic:customFooterContent>
+			<Button text="{i18n>btnCreateCustomer}" press="onCreateCustomer"/>
+		</semantic:customFooterContent>
 	</semantic:FullscreenPage>
 </mvc:View>

@@ -68,7 +68,13 @@ sap.ui.define([
     		    
     		    // Ensure the default filtering is set on the region
     		    this._setRegionFilter("");
-
+    		    
+    		    // Reference to the Create New Customer dialog
+    		    this._oCreateCustomerDialog = null;
+    		    
+    		    //Remove this nonsense
+    		    this.onCreateCustomer();
+    		    
 				// Make sure, busy indication is showing immediately so there is no
 				// break after the busy indication for loading the view's meta data is
 				// ended (see promise 'oWhenMetadataIsLoaded' in AppController)
@@ -160,6 +166,23 @@ sap.ui.define([
 			onCountrySelect : function(oEvent) {
 				// Ensure that the region filter is set
 				this._setRegionFilter(oEvent.getParameters().selectedItem.getKey());
+			},
+			
+			/**
+			 * Event handler on press of the Create Customer button
+			 * Navigates to the Create Customer dialog
+			 * @public
+			 */
+			onCreateCustomer : function () {
+				
+				// Instantiate the Create New Customer dialog
+				if (!this._oCreateCustomerDialog) {
+					 this._oCreateCustomerDialog = sap.ui.xmlfragment("zcustoview.view.CreateCustomer");
+            		this.getView().addDependent(this._oCreateCustomerDialog);
+				}
+				
+				this._oCreateCustomerDialog.open();
+				
 			},
 
 			/**

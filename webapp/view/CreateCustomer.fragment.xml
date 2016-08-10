@@ -1,0 +1,45 @@
+<core:FragmentDefinition
+   xmlns="sap.m"
+   xmlns:core="sap.ui.core"
+   xmlns:f="sap.ui.layout.form">
+   <Dialog
+      title="Create New Customer">
+   	<content>
+			<f:SimpleForm columnsL="1" editable="true" emptySpanL="4" emptySpanM="4"
+				id="createCustomerForm" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout"  backgroundDesign="Solid">
+				<f:content>
+					<Label id="labelTitle" text="{i18n>labelCreateTitle}" textAlign="Left" width="100%"/>
+				    <Select id="selTitle" selectedKey="" items="{path: 'titles>/'}">
+						<core:Item text="{titles>text}" key="{titles>text}"/>
+					</Select>
+					<Label id="labelAccount" text="{i18n>labelCreateAccountName}" textAlign="Left" width="100%"/>
+					<Input id="AccountName" value="" maxLength="40"/>
+					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Left" width="100%"/>
+					<Select id="selCountry" selectedKey="" change="onCountrySelect"
+						items="{path: 'countries>/'}">
+						<core:Item text="{countries>name}" key="{countries>key}"/>
+					</Select>
+					<Label id="labelStreet" text="{i18n>labelSearchStreet}" textAlign="Left" width="100%"/>
+					<Input id="street" value="" maxLength="60"/>
+					<Label id="labelCity" text="{i18n>labelSearchCity}" textAlign="Left" width="100%"/>
+					<Input id="city" value="" maxLength="25"/>
+					<Label id="labelPostcode" text="{i18n>labelCreatePostcode}" textAlign="Left" width="100%"/>
+					<Input id="postcode" value="" maxLength="10"/>
+					<Label id="labelRegion" text="{i18n>labelCreateRegion}" textAlign="Left" width="100%"/>
+					<Select id="selRegion" selectedKey=""
+						items="{path: 'regions>/'}">
+						<core:Item text="{regions>name}" key="{regions>key}"/>
+					</Select>
+					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}" textAlign="Left" width="100%"/>
+					<Input id="telephone" value="" maxLength="16"/>
+					<Label id="labelEmail" text="{i18n>labelSearchEmail}" textAlign="Left" width="100%"/>
+					<Input id="email" value="" maxLength="255"/>
+				</f:content>
+			</f:SimpleForm>
+		</content>
+		<buttons>
+			<Button text="{i18n>btnCancel}" press="onCancel" type="Reject"/>
+			<Button text="{i18n>btnCreateCustomer}" press="onCreateCustomer" type="Accept"/>
+		</buttons>
+   </Dialog>
+</core:FragmentDefinition>
