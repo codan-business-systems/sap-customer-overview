@@ -23,7 +23,7 @@ sap.ui.define([
 			onInit : function () {
 				var oViewModel,
 					iOriginalBusyDelay,
-					oTable = this.byId("table");
+					oTable = this.byId("searchResultsTable");
 
 				// Put down search table's original value for busy indicator delay,
 				// so it can be restored later on. Busy handling on the table is
@@ -33,7 +33,7 @@ sap.ui.define([
 				// keeps the search state
 				this._oTableSearchState = [];
 
-				// Model used to manipulate control states
+				// Model used to manipulate control states and store search criteria
 				oViewModel = new JSONModel({
 					searchTableTitle : this.getResourceBundle().getText("searchTableTitle"),
 					saveAsTileTitle: this.getResourceBundle().getText("searchViewTitle"),
@@ -41,9 +41,33 @@ sap.ui.define([
 					shareSendEmailSubject: this.getResourceBundle().getText("shareSendEmailSearchSubject"),
 					shareSendEmailMessage: this.getResourceBundle().getText("shareSendEmailSearchMessage", [location.href]),
 					tableNoDataText : this.getResourceBundle().getText("tableNoDataText"),
-					tableBusyDelay : 0
+					tableBusyDelay : 0,
+					serialNo: "",
+					account: "",
+					country: "",
+					transaction: "",
+					street: "",
+					city: "",
+					postcode: "",
+					region: "",
+					telephone: "",
+					email: ""
 				});
+				
 				this.setModel(oViewModel, "searchView");
+
+				// Initialise the countries data from the json file
+				var oCountriesModel = new sap.ui.model.json.JSONModel();
+				oCountriesModel.loadData("../webapp/model/countries.json");
+    			this.setModel(oCountriesModel, "countries");
+    			
+    			// Initialise the regions data from the json file
+    			var oRegionModel = new sap.ui.model.json.JSONModel();
+    			oRegionModel.loadData("../webapp/model/regions.json");
+    		    this.setModel(oRegionModel, "regions");
+    		    
+    		    // Ensure the default filtering is set on the region
+    		    this._setRegionFilter("");
 
 				// Make sure, busy indication is showing immediately so there is no
 				// break after the busy indication for loading the view's meta data is
@@ -52,6 +76,7 @@ sap.ui.define([
 					// Restore original busy indicator delay for search's table
 					oViewModel.setProperty("/tableBusyDelay", iOriginalBusyDelay);
 				});
+
 			},
 
 			/* =========================================================== */
@@ -81,6 +106,61 @@ sap.ui.define([
 				}
 				this.getModel("searchView").setProperty("/searchTableTitle", sTitle);
 			},
+			
+			
+			/**
+			 * Event handler when the search button is pressed
+			 * @public
+			 */ 
+			onSearch : function() {
+				
+				//Retrieve the entered properties from the searchView model
+				//and map to a filters array
+				var aFilters = [];
+				
+				// Serial No
+				aFilters = this._addFilter("serialNo", aFilters);
+
+				// Account
+				aFilters = this._addFilter("account", aFilters);
+				
+				// Country
+				aFilters = this._addFilter("country", aFilters);
+				
+				// Transaction (RMA) ID
+				aFilters = this._addFilter("transaction", aFilters);
+				
+				// Street
+				aFilters = this._addFilter("street", aFilters);
+				
+				// City
+				aFilters = this._addFilter("city", aFilters);
+				
+				// Postcode
+				aFilters = this._addFilter("postcode", aFilters);
+				
+				// Region
+				aFilters = this._addFilter("region", aFilters);
+				
+				// Telephone
+				aFilters = this._addFilter("telephone", aFilters);
+				
+				// Email
+				aFilters = this._addFilter("email", aFilters);
+				
+				// Update the table binding
+				this.getView().byId("searchResultsTable").getBinding("items").filter(aFilters);
+			},
+			
+			/**
+			 * Event handler for when the country selection is change
+			 * @param {sap.ui.core.Item} oEvent Control that fired the event
+			 * @public
+			 */
+			onCountrySelect : function(oEvent) {
+				// Ensure that the region filter is set
+				this._setRegionFilter(oEvent.getParameters().selectedItem.getKey());
+			},
 
 			/**
 			 * Event handler when a table item gets pressed
@@ -102,25 +182,6 @@ sap.ui.define([
 				history.go(-1);
 			},
 
-
-			onSearch : function (oEvent) {
-				if (oEvent.getParameters().refreshButtonPressed) {
-					// Search field's 'refresh' button has been pressed.
-					// This is visible if you select any master list item.
-					// In this case no new search is triggered, we only
-					// refresh the list binding.
-					this.onRefresh();
-				} else {
-					var oTableSearchState = [];
-					var sQuery = oEvent.getParameter("query");
-
-					if (sQuery && sQuery.length > 0) {
-						oTableSearchState = [new Filter("customer", FilterOperator.Contains, sQuery)];
-					}
-					this._applySearch(oTableSearchState);
-				}
-
-			},
 
 			/**
 			 * Event handler for refresh event. Keeps filter, sort
@@ -146,19 +207,45 @@ sap.ui.define([
 					objectId: oItem.getBindingContext().getProperty("customer")
 				});
 			},
-
+			
 			/**
-			 * Internal helper method to apply both filter and search state together on the list binding
-			 * @param {object} oTableSearchState an array of filters for the search
+			 * Adds a filter option to a filter array if the specified value is not blank
+			 * @param {string} sProperty Property value to be retrieved from the model
+			 * @param {array} aFilters array of Filter objets
+			 * @returns {array} Modified array of Filter objects
 			 * @private
 			 */
-			_applySearch: function(oTableSearchState) {
-				var oViewModel = this.getModel("searchView");
-				this._oTable.getBinding("items").filter(oTableSearchState, "Application");
-				// changes the noDataText of the list in case there are no filter results
-				if (oTableSearchState.length !== 0) {
-					oViewModel.setProperty("/tableNoDataText", this.getResourceBundle().getText("searchNoDataWithSearchText"));
+			_addFilter: function (sProperty, aFilters) {
+				
+				var sValue = this.getModel("searchView").getProperty("/" + sProperty);
+				if (sValue && sValue !== "") {
+					aFilters.push(new sap.ui.model.Filter(sProperty, sap.ui.model.FilterOperator.Contains, sValue));
 				}
+				return aFilters;
+			},
+			
+			
+			/**
+			 * Ensures the region filter is set based on the selected Country key
+			 * @param {string} sCountryKey Key of the country selected
+			 * @private
+			 */ 
+			_setRegionFilter: function(sCountryKey) {
+				
+				var aFilters = [];
+				// Always start with a blank value
+				aFilters.push(new sap.ui.model.Filter("country", sap.ui.model.FilterOperator.EQ, ""));
+				
+				// If a country key is passed, add that as well
+				if (sCountryKey && sCountryKey !== "") {
+					aFilters.push(new sap.ui.model.Filter("country"), sap.ui.model.FilterOperator.EQ, sCountryKey);
+				}
+				
+				this.byId("selRegion").getBinding("items").filter(new sap.ui.model.Filter({
+					filters: aFilters,
+					and: false
+				}));
+				
 			}
 
 		});

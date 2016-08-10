@@ -18,6 +18,14 @@
 					"odataVersion": "2.0",
 					"localUri": "localService/metadata.xml"
 				}
+			},
+			"common": {
+				"uri": "/sap/opu/odata/sap/z_common_srv",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": ""
+				}
 			}
 		},
 		"sourceTemplate": {
