@@ -12,18 +12,14 @@
 					<Label id="labelSerialNo" text="{i18n>labelSearchSerialNo}" textAlign="Right" width="100%"/>
 					<Input id="Name" value="{searchView>/serialNo}" maxLength="40"/>
 					<Label id="labelAccount" text="{i18n>labelSearchAccount}" textAlign="Right" width="100%"/>
-					<Input id="Account" value="{searchView>/account}" maxLength="40"/>
+					<Input id="Account" value="{searchView>/name}" maxLength="40"/>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Right" width="100%"/>
 					<Select id="selCountry" selectedKey="{searchView>/country}" change="onCountrySelect"
 						items="{path: 'countries>/'}">
 						<core:Item text="{countries>name}" key="{countries>key}"/>
 					</Select>
 					<Label id="labelRMA" text="{i18n>labelSearchRMA}" textAlign="Right" width="100%"/>
-					<Input id="transaction" value="{searchView>/transaction}" maxLength="6"/>
-					<Label id="labelStreet" text="{i18n>labelSearchStreet}" textAlign="Right" width="100%"/>
-					<Input id="street" value="{searchView>/street}" maxLength="60"/>
-					<Label id="labelCity" text="{i18n>labelSearchCity}" textAlign="Right" width="100%"/>
-					<Input id="city" value="{searchView>/city}" maxLength="25"/>
+					<Input id="transaction" value="{searchView>/rmaId}" maxLength="6"/>
 					<Label id="labelPostcodeRegion" text="{i18n>labelSearchPostcodeRegion}" textAlign="Right" width="100%"/>
 					<Input id="postcode" value="{searchView>/postcode}" maxLength="10"/>
 					<Select id="selRegion" selectedKey="{searchView>/region}"
@@ -36,7 +32,7 @@
 					<Input id="email" value="{searchView/email}" maxLength="255"/>
 				</f:content>
 			</f:SimpleForm>
-			<f:SimpleForm layout="ResponsiveGridLayout" minWidth="1024" id="customerSearch" editable="fal" backgroundDesign="transparent" columnsL="1">
+			<f:SimpleForm layout="ResponsiveGridLayout" minWidth="1024" id="customerSearch" editable="false" backgroundDesign="transparent" columnsL="1">
 				<f:content>
 				</f:content>
 			</f:SimpleForm>
@@ -47,12 +43,13 @@
 					<Button width="100px" text="{i18n>btnSearch}" id="search" press="onSearch"/>
 				</f:content>
 			</f:SimpleForm>
-			<Table id="searchResultsTable" width="auto" class="sapUiResponsiveMargin" items="{ path: '/Customers', sorter: { path: 'customer', descending: false } }"
-				noDataText="{searchView>/tableNoDataText}" busyIndicatorDelay="{searchView>/tableBusyDelay}" growing="true" growingScrollToLoad="true"
-				updateFinished="onUpdateFinished">
+			<Table id="searchResultsTable" width="auto" class="sapUiResponsiveMargin" 
+				noDataText="{searchView>/tableNoDataText}" busyIndicatorDelay="{searchView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
+				updateFinished="onUpdateFinished" 
+				items="{ path: '/CustomerSearchResults', sorter: { path: 'customerNumber', descending: false } }" >
 				<headerToolbar>
 					<Toolbar>
-						<Title id="tableHeader" text="{searchView>/worklistTableTitle}"/>
+						<Title id="tableHeader" text="{searchView>/searchTableTitle}"/>
 						<ToolbarSpacer/>
 					</Toolbar>
 				</headerToolbar>
@@ -91,10 +88,9 @@
 				<items>
 					<ColumnListItem type="Navigation" press="onPress">
 						<cells>
-							<ObjectIdentifier title="{name1} ({customer})" id="resultName"/>
-							<Text text="{ parts : [ {path: 'street'}, 
-												    {path: 'city'}, 
-												    {path: 'region'},
+							<ObjectIdentifier title="{name} ({customerNumber})" id="resultName"/>
+							<Text text="{ parts : [
+												    {path: 'regionText'},
 												    {path: 'postcode'}
 												  ],
 										formatter: '.formatter.address' }"/>
@@ -108,7 +104,7 @@
 			</Table>
 		</semantic:content>
 		<semantic:customFooterContent>
-			<Button text="{i18n>btnCreateCustomer}" press="onCreateCustomer"/>
+			<Button text="{i18n>btnCreateCustomer}" press="onCreateCustomer" visible="false"/>
 		</semantic:customFooterContent>
 	</semantic:FullscreenPage>
 </mvc:View>

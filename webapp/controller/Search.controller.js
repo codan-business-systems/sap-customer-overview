@@ -4,13 +4,20 @@ sap.ui.define([
 		"zcustoview/model/formatter",
 		"sap/ui/model/Filter",
 		"sap/ui/model/FilterOperator",
-		"sap/ui/core/routing/History"
-	], function (BaseController, JSONModel, formatter, Filter, FilterOperator, History) {
+		"sap/ui/core/routing/History",
+		"sap/m/Button"
+	], function (BaseController, JSONModel, formatter, Filter, FilterOperator, History, Button) {
 		"use strict";
 
 		return BaseController.extend("zcustoview.controller.Search", {
 
 			formatter: formatter,
+			
+			// Variable to store the context for customer creation
+			_oContext: null,
+			
+			// Reference to the Create New Customer dialog
+    		_oCreateCustomerDialog: null,
 
 			/* =========================================================== */
 			/* lifecycle methods                                           */
@@ -42,10 +49,10 @@ sap.ui.define([
 					shareSendEmailMessage: this.getResourceBundle().getText("shareSendEmailSearchMessage", [location.href]),
 					tableNoDataText : this.getResourceBundle().getText("tableNoDataText"),
 					tableBusyDelay : 0,
-					serialNo: "",
-					account: "",
+					serialNumber: "",
+					name: "",
 					country: "",
-					transaction: "",
+					rmaId: "",
 					street: "",
 					city: "",
 					postcode: "",
@@ -56,24 +63,25 @@ sap.ui.define([
 				
 				this.setModel(oViewModel, "searchView");
 
+				// Initially, stop 
+
 				// Initialise the countries data from the json file
 				var oCountriesModel = new sap.ui.model.json.JSONModel();
 				oCountriesModel.loadData("../webapp/model/countries.json");
     			this.setModel(oCountriesModel, "countries");
     			
     			// Initialise the regions data from the json file
-    			var oRegionModel = new sap.ui.model.json.JSONModel();
-    			oRegionModel.loadData("../webapp/model/regions.json");
-    		    this.setModel(oRegionModel, "regions");
+    			var oRegionsModel = new sap.ui.model.json.JSONModel();
+    			oRegionsModel.loadData("../webapp/model/regions.json");
+    		    this.setModel(oRegionsModel, "regions");
+    		    
+    		    // Initialise the titles data from the json file
+    		    var oTitlesModel = new sap.ui.model.json.JSONModel();
+    		    oTitlesModel.loadData("../webapp/model/titles.json");
+    		    this.setModel(oTitlesModel, "titles");
     		    
     		    // Ensure the default filtering is set on the region
     		    this._setRegionFilter("");
-    		    
-    		    // Reference to the Create New Customer dialog
-    		    this._oCreateCustomerDialog = null;
-    		    
-    		    //Remove this nonsense
-    		    this.onCreateCustomer();
     		    
 				// Make sure, busy indication is showing immediately so there is no
 				// break after the busy indication for loading the view's meta data is
@@ -125,23 +133,18 @@ sap.ui.define([
 				var aFilters = [];
 				
 				// Serial No
-				aFilters = this._addFilter("serialNo", aFilters);
+				aFilters = this._addFilter("serialNumber", aFilters);
 
 				// Account
-				aFilters = this._addFilter("account", aFilters);
+				aFilters = this._addFilter("name", aFilters);
 				
 				// Country
 				aFilters = this._addFilter("country", aFilters);
 				
 				// Transaction (RMA) ID
-				aFilters = this._addFilter("transaction", aFilters);
+				aFilters = this._addFilter("rmaId", aFilters);
 				
 				// Street
-				aFilters = this._addFilter("street", aFilters);
-				
-				// City
-				aFilters = this._addFilter("city", aFilters);
-				
 				// Postcode
 				aFilters = this._addFilter("postcode", aFilters);
 				
@@ -178,8 +181,20 @@ sap.ui.define([
 				// Instantiate the Create New Customer dialog
 				if (!this._oCreateCustomerDialog) {
 					 this._oCreateCustomerDialog = sap.ui.xmlfragment("zcustoview.view.CreateCustomer");
+					 this._oCreateCustomerDialog.addButton( 
+					 	new Button({
+					 		text: "{i18n>btnCancel}",
+					 		press: this.onCancel.bind(this)
+						})
+					);
             		this.getView().addDependent(this._oCreateCustomerDialog);
 				}
+				
+				// Create a new entry in the model
+			//	this._oContext = this.getModel().createEntry("/Customers", {
+			//		
+			//	});
+			//	this.getView().getBindingContext(this._oContext);
 				
 				this._oCreateCustomerDialog.open();
 				
@@ -214,6 +229,25 @@ sap.ui.define([
 			onRefresh : function () {
 				this._oTable.getBinding("items").refresh();
 			},
+			
+			/**
+			 * Event handler to submit customer creation to the model
+			 * @public
+			 */
+			onSubmitCustomer : function() {
+				this.getModel().submitChanges();
+			},
+			
+			/**
+			 * Event handler to cancel the customer creation (closing the dialog)
+			 * @public
+			 */
+			onCancel : function() {
+				this.getModel().deleteCreatedEntry(this._oContext);
+				if (this._oCreateCustomerDialog) {
+					this._oCreateCustomerDialog.close();
+				}
+			},
 
 			/* =========================================================== */
 			/* internal methods                                            */
@@ -227,7 +261,7 @@ sap.ui.define([
 			 */
 			_showObject : function (oItem) {
 				this.getRouter().navTo("object", {
-					objectId: oItem.getBindingContext().getProperty("customer")
+					objectId: oItem.getBindingContext().getProperty("customerNumber")
 				});
 			},
 			

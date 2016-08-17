@@ -12,7 +12,7 @@ sap.ui.define([
 	) {
 		"use strict";
 
-		return BaseController.extend("zcustoview.controller.Object", {
+		return BaseController.extend("zcustoview.controller.FactSheet", {
 
 			formatter: formatter,
 
@@ -34,11 +34,11 @@ sap.ui.define([
 						delay : 0
 					});
 
-				this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
+				this.getRouter().getRoute("factSheet").attachPatternMatched(this._onObjectMatched, this);
 
 				// Store original busy indicator delay, so it can be restored later on
 				iOriginalBusyDelay = this.getView().getBusyIndicatorDelay();
-				this.setModel(oViewModel, "objectView");
+				this.setModel(oViewModel, "factSheetView");
 				this.getOwnerComponent().getModel().metadataLoaded().then(function () {
 						// Restore original busy indicator delay for the object view
 						oViewModel.setProperty("/delay", iOriginalBusyDelay);
@@ -63,7 +63,7 @@ sap.ui.define([
 				if (sPreviousHash !== undefined) {
 					history.go(-1);
 				} else {
-					this.getRouter().navTo("worklist", {}, true);
+					this.getRouter().navTo("search", {}, true);
 				}
 			},
 
@@ -94,7 +94,7 @@ sap.ui.define([
 			 * @private
 			 */
 			_bindView : function (sObjectPath) {
-				var oViewModel = this.getModel("objectView"),
+				var oViewModel = this.getModel("factSheetView"),
 					oDataModel = this.getModel();
 
 				this.getView().bindElement({
@@ -119,7 +119,7 @@ sap.ui.define([
 
 			_onBindingChange : function () {
 				var oView = this.getView(),
-					oViewModel = this.getModel("objectView"),
+					oViewModel = this.getModel("factSheetView"),
 					oElementBinding = oView.getElementBinding();
 
 				// No data for the binding

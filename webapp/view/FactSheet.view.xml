@@ -1,12 +1,24 @@
-<core:FragmentDefinition
-   xmlns="sap.m"
-   xmlns:core="sap.ui.core"
-   xmlns:f="sap.ui.layout.form">
-   <Dialog
-      title="Create New Customer">
-   	<content>
-			<f:SimpleForm columnsL="1" editable="true" emptySpanL="4" emptySpanM="4"
-				id="createCustomerForm" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout"  backgroundDesign="Solid">
+<mvc:View
+	controllerName="zcustoview.controller.FactSheet"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:semantic="sap.m.semantic"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+
+	<semantic:FullscreenPage
+		id="page"
+		navButtonPress="onNavBack"
+		showNavButton="true"
+		title="{i18n>factSheetViewTitle}"
+		busy="{factSheetView>/busy}"
+		busyIndicatorDelay="{factSheetView>/delay}">
+		<semantic:content>
+			<ObjectHeader
+				title="{ parts: [ {path: 'customer'} ], formatter : '.formatter.factSheetHeader"
+			/>
+			<f:SimpleForm columnsL="2" editable="true" emptySpanL="4" emptySpanM="4"
+				id="modifyCustomerForm" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout"  backgroundDesign="Solid">
 				<f:content>
 					<Label id="labelTitle" text="{i18n>labelCreateTitle}" textAlign="Left" width="100%"/>
 				    <Select id="selTitle" selectedKey="" items="{path: 'titles>/'}">
@@ -38,10 +50,7 @@
 					<Input id="email" value="{/Customer/email}" maxLength="255" required="true"/>
 				</f:content>
 			</f:SimpleForm>
-		</content>
-<!--		<buttons>
-			<Button text="{i18n>btnCancel}" press="onCancel" type="Reject"/>
-			<Button text="{i18n>btnCreateCustomer}" press="onSubmitCustomer" type="Accept"/>
-		</buttons>-->
-   </Dialog>
-</core:FragmentDefinition>
+ 		</semantic:content>
+	</semantic:FullscreenPage>
+
+</mvc:View>
