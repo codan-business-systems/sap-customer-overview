@@ -20,13 +20,20 @@ sap.ui.define([
 			/**
 			 * Formats parts of an address into a single string
 			 * @public
+			 * @param {string} sStreet Street Name
+			 * @param {string} sCity   City/Town
 			 * @param {string} sRegion Region/State
 			 * @param {string} sPostcode Postcode
 			 * @returns {string} Formatted address string
 			 */
-			address: function(sRegion, sPostcode) {
+			address: function(sStreet, sCity, sRegion, sPostcode) {
+				var sResult = sStreet;
 				var bCommaAdded = false;
-				var sResult = "";
+				
+				if (sCity && sCity !== "") {
+					sResult = sResult === "" ? sCity : sResult + ", " + sCity;
+					bCommaAdded = true;
+				}
 				
 				if (sRegion && sRegion !== "") {
 					sResult = bCommaAdded ? sResult + "  " + sRegion : sResult + ", " + sRegion;
@@ -37,16 +44,7 @@ sap.ui.define([
 				}
 				
 				return sResult;
-			},
-			
-			/**
-			 * Formats the Account Fact Sheet details object header
-			 * @param {string} sId Account Id
-			 * @public
-			 */
-			 factSheetHeader: function(sId) {
-			 	return "Account Details (" + sId + ")";
-			 }
+			}
 
 		};
 

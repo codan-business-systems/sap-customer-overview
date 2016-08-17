@@ -260,7 +260,7 @@ sap.ui.define([
 			 * @private
 			 */
 			_showObject : function (oItem) {
-				this.getRouter().navTo("object", {
+				this.getRouter().navTo("factSheet", {
 					objectId: oItem.getBindingContext().getProperty("customerNumber")
 				});
 			},

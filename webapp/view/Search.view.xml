@@ -90,13 +90,13 @@
 						<cells>
 							<ObjectIdentifier title="{name} ({customerNumber})" id="resultName"/>
 							<Text text="{ parts : [
-												    {path: 'regionText'},
+													{path: 'street'},
+													{path: 'city'},
+												    {path: 'region'},
 												    {path: 'postcode'}
 												  ],
 										formatter: '.formatter.address' }"/>
 							<Text text="{countryText}" id="resultCountryText"/>
-							<Text text="{telephone}" id="resultTelephone"/>
-							<Text text="{mobile}" id="resultMobile"/>
 							<Text text="{email}" id="resultEmail"/>
 						</cells>
 					</ColumnListItem>

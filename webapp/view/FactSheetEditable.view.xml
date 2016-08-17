@@ -1,0 +1,44 @@
+<mvc:View controllerName="zcustoview.controller.FactSheet" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
+	xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
+	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="true" title="{i18n>factSheetViewTitle}"
+		busy="{factSheetView>/busy}" busyIndicatorDelay="{factSheetView>/delay}">
+		<ObjectHeader title="{factSheetView>/accountDetailsTitle}"></ObjectHeader>
+		<semantic:content>
+			<f:SimpleForm columnsL="2" columnsM="2" editable="true" emptySpanL="0" emptySpanM="0" adjustLabelSpan="false" id="modifyCustomerForm1"
+				labelSpanL="4" labelSpanM="12" layout="ResponsiveGridLayout" backgroundDesign="Solid">
+				<f:content>
+					<core:Title text="Contact"/>
+					<Label id="labelTitle" text="{i18n>labelCreateTitle}" textAlign="Left" width="100%"/>
+					<Select id="selTitle" selectedKey="" items="{path: 'titles>/'}" enabled="false" >
+						<core:Item text="{titles>title}" key="{titles>title}"/>
+					</Select>
+					<Label id="labelAccount" text="{i18n>labelCreateAccountName}" textAlign="Left" width="100%"/>
+					<Input id="AccountName" value="{/Customer/name1}" maxLength="40" required="true"/>
+					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}" textAlign="Left" width="100%"/>
+					<Input id="telephone" value="{/Customer/telephone}" maxLength="16" required="true"/>
+					<Label id="labelMobile" text="{i18n>labelCreateMobile}" textAlign="Left" width="100%"/>
+					<Input id="mobile" value="{/Customer/mobile}" maxLength="16"/>
+					<Label id="labelEmail" text="{i18n>labelSearchEmail}" textAlign="Left" width="100%"/>
+					<Input id="email" value="{/Customer/email}" maxLength="255" required="true"/>
+					<core:Title text="Address"/>
+					<Label id="labelStreet" text="{i18n>labelSearchStreet}" textAlign="Left" width="100%"/>
+					<Input id="street" value="{/Customer/street}" maxLength="60" required="true"/>
+					<Label id="labelCity" text="{i18n>labelSearchCity}" textAlign="Left" width="100%"/>
+					<Input id="city" value="{/Customer/city}" maxLength="25" required="true"/>
+					<Label id="labelPostcode" text="{i18n>labelCreatePostcode}" textAlign="Left" width="100%"/>
+					<Input id="postcode" value="{/Customer/postcode}" maxLength="10" required="true"/>
+					<Label id="labelRegion" text="{i18n>labelCreateRegion}" textAlign="Left" width="100%"/>
+					<Select id="selRegion" selectedKey="{/Customer/region}" required="true" items="{path: 'regions>/'}">
+						<core:Item text="{regions>name}" key="{regions>key}"/>
+					</Select>
+					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Left" width="100%"/>
+					<Select id="selCountry" selectedKey="{/Customer/country}" change="onCountrySelect" items="{path: 'countries>/'}" required="true">
+						<core:Item text="{countries>name}" key="{countries>key}"/>
+					</Select>
+				</f:content>
+			</f:SimpleForm>
+			
+			
+		</semantic:content>
+	</semantic:FullscreenPage>
+</mvc:View>
