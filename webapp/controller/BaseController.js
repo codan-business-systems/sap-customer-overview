@@ -1,7 +1,10 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
-	"sap/ui/model/json/JSONModel"
-], function(Controller, JSONModel) {
+	"sap/ui/model/json/JSONModel",
+	"sap/m/Dialog",
+	"sap/m/Button",
+	"sap/ui/core/BusyIndicator"
+], function(Controller, JSONModel, Dialog, Button, BusyIndicator) {
 	"use strict";
 
 	return Controller.extend("zcustoview.controller.BaseController", {
@@ -21,6 +24,25 @@ sap.ui.define([
 			var oTitlesModel = new JSONModel();
 			oTitlesModel.loadData("../webapp/model/titles.json");
 			this.setModel(oTitlesModel, "titles");
+
+			// Check that the user has a valid sales office assignment
+			// Set Busy Indicator immediately while we do this check
+			BusyIndicator.show(0);
+			var oEnvModel = this.getOwnerComponent().getModel("environmentInfo");
+
+			if (oEnvModel) {
+
+				oEnvModel.read("/EnvironmentInfos", {
+					success: function() {
+						BusyIndicator.hide();
+					},
+					error: function() {
+						this.raiseErrorDialog(this.getResourceBundle().getText("noSalesOfficeAssignment"));
+					}.bind(this)
+				});
+
+			}
+
 		},
 
 		/**
@@ -73,6 +95,42 @@ sap.ui.define([
 				oViewModel.getProperty("/shareSendEmailSubject"),
 				oViewModel.getProperty("/shareSendEmailMessage")
 			);
+		},
+		
+		/**
+		 * Raises an error message dialog with the message text specified
+		 * @param {string} sText Error Message to Display
+		 * @param {function} fAfterClose? Function to perform after close
+		 * @private
+		 */
+		raiseErrorDialog: function(sText, fAfterClose) {
+			
+			var functionAfterClose = fAfterClose;
+		
+			var dialog = new Dialog({
+				title: this.getResourceBundle().getText("errorDialogTitle"),
+				type: "Message",
+				state: "Error",
+				id: "errorDialog",
+				content: new sap.m.Text({
+					text: sText
+				}),
+				beginButton: new Button({
+					text: this.getResourceBundle().getText("dialogOk"),
+					press: function() {
+						dialog.close();
+					}
+				})
+			});
+			
+			if (!functionAfterClose) {
+				functionAfterClose = function() {
+					dialog.destroy();
+				};
+			}
+			dialog.attachAfterClose(this, functionAfterClose, this);
+
+			dialog.open();
 		}
 
 	});
