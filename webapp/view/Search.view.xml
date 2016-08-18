@@ -1,52 +1,48 @@
-<mvc:View controllerName="zcustoview.controller.Search" busy="false"
-			xmlns="sap.m" 
-			xmlns:mvc="sap.ui.core.mvc" 
-			xmlns:semantic="sap.m.semantic"
-			xmlns:core="sap.ui.core"
-			xmlns:f="sap.ui.layout.form">
+<mvc:View controllerName="zcustoview.controller.Search" busy="false" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc"
+	xmlns:semantic="sap.m.semantic" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form">
 	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="true" title="{i18n>searchViewTitle}">
 		<semantic:content>
-			<f:SimpleForm columnsL="1" editable="true" emptySpanL="4" emptySpanM="4"
-				id="SearchQueryParams" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout" minWidth="1024" backgroundDesign="Solid">
+			<f:SimpleForm columnsL="1" editable="true" emptySpanL="4" emptySpanM="4" id="SearchQueryParams" labelSpanL="3" labelSpanM="3"
+				layout="ResponsiveGridLayout" minWidth="1024" backgroundDesign="Solid">
 				<f:content>
-					<Label id="labelSerialNo" text="{i18n>labelSearchSerialNo}" textAlign="Right" width="100%"/>
-					<Input id="Name" value="{searchView>/serialNo}" maxLength="40"/>
+					<HBox visible="false">
+						<Label id="labelSerialNo" text="{i18n>labelSearchSerialNo}" textAlign="Right" width="100%"/>
+						<Input id="Name" value="{searchView>/serialNo}" maxLength="40"/>
+					</HBox>
 					<Label id="labelAccount" text="{i18n>labelSearchAccount}" textAlign="Right" width="100%"/>
 					<Input id="Account" value="{searchView>/name}" maxLength="40"/>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Right" width="100%"/>
-					<Select id="selCountry" selectedKey="{searchView>/country}" change="onCountrySelect"
-						items="{path: 'countries>/'}">
+					<Select id="selCountry" selectedKey="{searchView>/country}" change="onCountrySelect" items="{path: 'countries>/'}">
 						<core:Item text="{countries>name}" key="{countries>key}"/>
 					</Select>
 					<Label id="labelRMA" text="{i18n>labelSearchRMA}" textAlign="Right" width="100%"/>
 					<Input id="transaction" value="{searchView>/rmaId}" maxLength="6"/>
 					<Label id="labelPostcodeRegion" text="{i18n>labelSearchPostcodeRegion}" textAlign="Right" width="100%"/>
 					<Input id="postcode" value="{searchView>/postcode}" maxLength="10"/>
-					<Select id="selRegion" selectedKey="{searchView>/region}"
-						items="{path: 'regions>/'}">
+					<Select id="selRegion" selectedKey="{searchView>/region}" items="{path: 'regions>/'}">
 						<core:Item text="{regions>name}" key="{regions>key}"/>
 					</Select>
 					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}" textAlign="Right" width="100%"/>
-					<Input id="telephone" value="{searchView/telephone}" maxLength="16"/>
+					<Input id="telephone" value="{searchView>/telephone}" maxLength="16"/>
 					<Label id="labelEmail" text="{i18n>labelSearchEmail}" textAlign="Right" width="100%"/>
-					<Input id="email" value="{searchView/email}" maxLength="255"/>
+					<Input id="email" value="{searchView>/email}" maxLength="255"/>
 				</f:content>
 			</f:SimpleForm>
 			<f:SimpleForm layout="ResponsiveGridLayout" minWidth="1024" id="customerSearch" editable="false" backgroundDesign="transparent" columnsL="1">
-				<f:content>
-				</f:content>
+				<f:content></f:content>
 			</f:SimpleForm>
-			<f:SimpleForm columnsL="1" editable="true" emptySpanL="4" emptySpanM="4"
-				 labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout" minWidth="1024" backgroundDesign="Solid">	
-				 <f:content>
-				 	<Label text="" width="100%"/>
+			<f:SimpleForm columnsL="1" editable="true" emptySpanL="4" emptySpanM="4" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout"
+				minWidth="1024" backgroundDesign="Solid">
+				<f:content>
+					<Label text="" width="100%"/>
+					<CheckBox id="chkIncludeArchived" text="{i18n>labelIncludeArchived}" selected="{searchView>/includeArchived}" />
+					<Label text="" width="100%"/>
 					<Button width="100px" text="{i18n>btnSearch}" id="search" press="onSearch"/>
 				</f:content>
 			</f:SimpleForm>
-			<Table id="searchResultsTable" width="auto" class="sapUiResponsiveMargin" 
-				noDataText="{searchView>/tableNoDataText}" busyIndicatorDelay="{searchView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
-				updateFinished="onUpdateFinished" 
-				items="{ path: '/CustomerSearchResults', sorter: { path: 'customerNumber', descending: false } }" >
+			<Table id="searchResultsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{searchView>/tableNoDataText}"
+				busyIndicatorDelay="{searchView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
+				updateFinished="onUpdateFinished" items="{ path: '/Customers', sorter: { path: 'name', descending: false } }">
 				<headerToolbar>
 					<Toolbar>
 						<Title id="tableHeader" text="{searchView>/searchTableTitle}"/>
@@ -75,12 +71,6 @@
 					<Column id="colCountry">
 						<Text text="{i18n>searchColCountry}" id="colCountryHeader"/>
 					</Column>
-					<Column id="colTelephone">
-						<Text text="{i18n>searchColTelephone}" id="colTelephoneHeader"/>
-					</Column>
-					<Column id="colMobile">
-						<Text text="{i18n>searchColMobile}" id="colMobileHeader"/>
-					</Column>
 					<Column id="colEmail">
 						<Text text="{i18n>searchColEmail}" id="colEmailHeader"/>
 					</Column>
@@ -88,14 +78,8 @@
 				<items>
 					<ColumnListItem type="Navigation" press="onPress">
 						<cells>
-							<ObjectIdentifier title="{name} ({customerNumber})" id="resultName"/>
-							<Text text="{ parts : [
-													{path: 'street'},
-													{path: 'city'},
-												    {path: 'region'},
-												    {path: 'postcode'}
-												  ],
-										formatter: '.formatter.address' }"/>
+							<ObjectIdentifier title="{name} ({account})" id="resultName"/>
+							<Text text="{ parts : [ {path: 'street'}, {path: 'city'}, {path: 'region'}, {path: 'postcode'} ], formatter: '.formatter.address' }"/>
 							<Text text="{countryText}" id="resultCountryText"/>
 							<Text text="{email}" id="resultEmail"/>
 						</cells>

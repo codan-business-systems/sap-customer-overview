@@ -1,4 +1,6 @@
-[{"name":"Abu Dhabi","key":"AZ","country":"AE"},
+[
+{"name":"","key":"","country":""},
+{"name":"Abu Dhabi","key":"AZ","country":"AE"},
 {"name":"Ajman","key":"AJ","country":"AE"},
 {"name":"Al Fujayrah","key":"FU","country":"AE"},
 {"name":"Dubai","key":"DU","country":"AE"},

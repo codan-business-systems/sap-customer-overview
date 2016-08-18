@@ -13,7 +13,7 @@
 						<core:Item text="{titles>title}" key="{titles>title}"/>
 					</Select>
 					<Label id="labelAccount" text="{i18n>labelCreateAccountName}"/>
-					<Input id="AccountName" value="{name1}" maxLength="40" editable="false"/>
+					<Input id="AccountName" value="{name}" maxLength="40" editable="false"/>
 					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}"/>
 					<Input id="telephone" value="{telephone}" maxLength="16" editable="false"/>
 					<Label id="labelMobile" text="{i18n>labelCreateMobile}"/>
@@ -28,11 +28,11 @@
 					<Label id="labelPostcode" text="{i18n>labelCreatePostcode}"/>
 					<Input id="postcode" value="{postcode}" maxLength="10" editable="false"/>
 					<Label id="labelRegion" text="{i18n>labelCreateRegion}"/>
-					<Select id="selRegion" selectedKey="{region}" editable="false" items="{path: 'regions>/'}">
+					<Select id="selRegion" selectedKey="{region}" enabled="false" items="{path: 'regions>/'}">
 						<core:Item text="{regions>name}" key="{regions>key}"/>
 					</Select>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}"/>
-					<Select id="selCountry" selectedKey="{country}" change="onCountrySelect" items="{path: 'countries>/'}" enabled="false" required="true">
+					<Select id="selCountry" selectedKey="{country}" change="onCountrySelect" items="{path: 'countries>/'}" enabled="false">
 						<core:Item text="{countries>name}" key="{countries>key}"/>
 					</Select>
 				</f:content>

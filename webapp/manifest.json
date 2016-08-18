@@ -18,6 +18,14 @@
 					"odataVersion": "2.0",
 					"localUri": "localService/metadata.xml"
 				}
+			},
+			"environmentInfo": {
+				"uri": "/sap/opu/odata/sap/z_common_srv",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/metadata.xml"
+				}
 			}
 		},
 		"sourceTemplate": {
@@ -41,7 +49,10 @@
 			"tablet": true,
 			"phone": true
 		},
-		"supportedThemes": ["sap_hcb", "sap_bluecrystal"]
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_bluecrystal"
+		]
 	},
 	"sap.ui5": {
 		"_version": "1.2.0",
@@ -79,6 +90,14 @@
 						"sap-documentation": "heading"
 					}
 				}
+			},
+			"environmentInfo": {
+				"dataSource": "environmentInfo",
+				"settings": {
+					"metadataUrlParams": {
+						"sap-documentation": "heading"
+					}
+				}
 			}
 		},
 		"routing": {
@@ -89,19 +108,28 @@
 				"controlId": "app",
 				"controlAggregation": "pages",
 				"bypassed": {
-					"target": ["notFound"]
+					"target": [
+						"notFound"
+					]
 				},
 				"async": true
 			},
-			"routes": [{
-				"pattern": "",
-				"name": "search",
-				"target": ["search"]
-			}, {
-				"pattern": "Customers/{objectId}",
-				"name": "object",
-				"target": ["object"]
-			}],
+			"routes": [
+				{
+					"pattern": "",
+					"name": "search",
+					"target": [
+						"search"
+					]
+				},
+				{
+					"pattern": "Customers/{objectId}",
+					"name": "factSheet",
+					"target": [
+						"factSheet"
+					]
+				}
+			],
 			"targets": {
 				"search": {
 					"viewName": "Search",
@@ -115,5 +143,9 @@
 				}
 			}
 		}
+	},
+	"sap.platform.hcp": {
+		"uri": "webapp",
+		"_version": "1.1.0"
 	}
 }
