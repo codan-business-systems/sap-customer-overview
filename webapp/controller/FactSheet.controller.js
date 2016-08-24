@@ -41,23 +41,23 @@ sap.ui.define([
 			// Once the environment info service is loaded, call function to populate the RMA URL
 			var oEnvModel = this.getOwnerComponent().getModel("environmentInfo");
 
-			if (!oEnvModel) {
-					return;
-			}
+			if (oEnvModel) {
 
-			oEnvModel.read("/EnvironmentInfos", {
+				oEnvModel.read("/EnvironmentInfos", {
 					success: function(oData) {
 						var oEntry = oData.results[0];
 
 						if (oEntry) {
 							oViewModel.setProperty("/rmaUrl",
-								oEntry.baseUrl + oEntry.wdaPath + "zrm2_rma_document" + oEntry.clientSuffix + '&RMA_ID=&FPM_EDIT_MODE=R#'
+								oEntry.baseUrl + oEntry.wdaPath + "zrm2_rma_document" + oEntry.clientSuffix + "&RMA_ID=&FPM_EDIT_MODE=R#"
 							);
 						}
 					}
-			});
+				});
 
-		 	this.getRouter().getRoute("factSheet").attachPatternMatched(this._onObjectMatched, this);
+			}
+
+			this.getRouter().getRoute("factSheet").attachPatternMatched(this._onObjectMatched, this);
 
 			// Store original busy indicator delay, so it can be restored later on
 			iOriginalBusyDelay = this.getView().getBusyIndicatorDelay();
@@ -99,9 +99,52 @@ sap.ui.define([
 		 * @public
 		 */
 		onRmaDocumentSelect: function(oEvent) {
-			var oRmaId = oEvent.getSource().getBindingContext().getProperty("documentId");
-			var sUrl = this.getModel("environmentInfo").getProperty("/rmaUrl").replace("RMA_ID=", "RMA_ID=" + oRmaId);
-			window.open(sUrl,"_blank");
+			var oRmaId = oEvent.getSource().getBindingContext().getProperty("rmaId");
+			var sUrl = this.getModel("factSheetView").getProperty("/rmaUrl").replace("RMA_ID=", "RMA_ID=" + oRmaId);
+			window.open(sUrl, "_blank");
+		},
+		
+		/**
+		 * Event handler for press on Create button on Rma table
+		 * Navigate to the RMA Create screen in ERP
+		 * @public
+		 */
+		onCreateRma: function() {
+			var sUrl = this.getModel("factSheetView").getProperty("/rmaUrl").replace("FPM_EDIT_MODE=R","FPM_EDIT_MODE=C");
+			window.open(sUrl, "_blank");
+		},
+		
+		/**
+		 * Triggered by the RMA table's 'updateFinished' event: after new table
+		 * data is available, this handler method updates the table counter.
+		 * This should only happen if the update was successful, which is
+		 * why this handler is attached to 'updateFinished' and not to the
+		 * table's list binding's 'dataReceived' method.
+		 * @param {sap.ui.base.Event} oEvent the update finished event
+		 * @public
+		 */
+		onRmaUpdateFinished: function(oEvent) {
+			// update the search's object counter after the table update
+			var sTitle,
+				oTable = oEvent.getSource(),
+				iTotalItems = oEvent.getParameter("total");
+			// only update the counter if the length is final and
+			// the table is not empty
+			if (iTotalItems && oTable.getBinding("items").isLengthFinal()) {
+				sTitle = this.getResourceBundle().getText("factSheetRmaDocuments", [iTotalItems]);
+			} else {
+				sTitle = this.getResourceBundle().getText("factSheetRmaDocuments", ["0"]);
+			}
+			this.getModel("factSheetView").setProperty("/rmaDocumentsTitle", sTitle);
+		},
+		
+		/**
+		 * Triggered by pressing the refresh button on the rma tabl
+		 * Refreshes the rma table binding
+		 * @public
+		 */ 
+		onRmaRefresh: function() {
+			this.getView().byId("rmaDocumentsTable").getBinding("items").refresh();
 		},
 
 		/* =========================================================== */
@@ -164,10 +207,10 @@ sap.ui.define([
 				oElementBinding = oView.getElementBinding();
 
 			// No data for the binding
-			/*				if (!oElementBinding.getBoundContext()) {
-								this.getRouter().getTargets().display("objectNotFound");
-								return;
-							}*/
+			if (!oElementBinding.getBoundContext()) {
+				this.getRouter().getTargets().display("objectNotFound");
+				return;
+			}
 
 			var oResourceBundle = this.getResourceBundle(),
 				oObject = oView.getBindingContext().getObject(),

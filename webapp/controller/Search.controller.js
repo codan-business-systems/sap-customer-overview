@@ -5,10 +5,8 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/ui/core/routing/History",
-	"sap/m/Button",
-	"sap/m/Dialog",
-	"sap/m/Text"
-], function(BaseController, JSONModel, formatter, Filter, FilterOperator, History, Button, Dialog, Text) {
+	"sap/m/Button"
+], function(BaseController, JSONModel, formatter, Filter, FilterOperator, History, Button) {
 	"use strict";
 
 	return BaseController.extend("zcustoview.controller.Search", {
@@ -146,7 +144,7 @@ sap.ui.define([
 			aFilters = this._addFilter("email", aFilters);
 
 			if (aFilters.length === 0) {
-				this._raiseErrorDialog(this.getResourceBundle().getText("noSearchCriteria"));
+				this.raiseErrorDialog(this.getResourceBundle().getText("noSearchCriteria"));
 				return;
 			}
 
@@ -337,34 +335,6 @@ sap.ui.define([
 
 			return oResult;
 
-		},
-
-		/**
-		 * Raises an error message dialog with the message text specified
-		 * @param {string} sText Error Message to Display
-		 * @private
-		 */
-		_raiseErrorDialog: function(sText) {
-			var dialog = new Dialog({
-				title: this.getResourceBundle().getText("errorDialogTitle"),
-				type: "Message",
-				state: "Error",
-				id: "errorDialog",
-				content: new sap.m.Text({
-					text: sText
-				}),
-				beginButton: new Button({
-					text: this.getResourceBundle().getText("dialogOk"),
-					press: function() {
-						dialog.close();
-					}
-				}),
-				afterClose: function() {
-					dialog.destroy();
-				}
-			});
-
-			dialog.open();
 		}
 
 	});

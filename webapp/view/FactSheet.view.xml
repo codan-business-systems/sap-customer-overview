@@ -9,9 +9,7 @@
 				<f:content>
 					<core:Title text="{i18n>factSheetContactTitle}"/>
 					<Label id="labelTitle" text="{i18n>labelCreateTitle}"/>
-					<Select id="selTitle" selectedKey="{title}" items="{path: 'titles>/'}" enabled="false">
-						<core:Item text="{titles>title}" key="{titles>title}"/>
-					</Select>
+					<Input id="title" value="{title}" editable="false"/>
 					<Label id="labelAccount" text="{i18n>labelCreateAccountName}"/>
 					<Input id="AccountName" value="{name}" maxLength="40" editable="false"/>
 					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}"/>
@@ -28,23 +26,21 @@
 					<Label id="labelPostcode" text="{i18n>labelCreatePostcode}"/>
 					<Input id="postcode" value="{postcode}" maxLength="10" editable="false"/>
 					<Label id="labelRegion" text="{i18n>labelCreateRegion}"/>
-					<Select id="selRegion" selectedKey="{region}" enabled="false" items="{path: 'regions>/'}">
-						<core:Item text="{regions>name}" key="{regions>key}"/>
-					</Select>
+					<Input id="region" value="{regionText}" editable="false"/>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}"/>
-					<Select id="selCountry" selectedKey="{country}" change="onCountrySelect" items="{path: 'countries>/'}" enabled="false">
-						<core:Item text="{countries>name}" key="{countries>key}"/>
-					</Select>
+					<Input id="country" value="{countryText}" editable="false"/>
 				</f:content>
 			</f:SimpleForm>
 			
 			<Table id="rmaDocumentsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{i18n>noRmaDocumentsText}"
 				busyIndicatorDelay="{searchView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
-				updateFinished="onUpdateFinished" items="{ path: 'ToRmaDocuments' }">
+				updateFinished="onRmaUpdateFinished" items="{ path: 'Repairs' }">
 				<headerToolbar>
 					<Toolbar>
 						<Title id="tableHeader" text="{factSheetView>/rmaDocumentsTitle}"/>
 						<ToolbarSpacer/>
+						<Button press="onRmaRefresh"   icon="sap-icon://refresh"/>
+						<Button press="onCreateRma" icon="sap-icon://add"/>
 					</Toolbar>
 				</headerToolbar>
 				<columns>
@@ -70,12 +66,12 @@
 				<items>
 					<ColumnListItem type="Navigation" press="onRmaDocumentSelect">
 						<cells>
-							<ObjectIdentifier title="{description} ({documentId})" id="rmaId"/>
-							<Text text="{status}" id="rmaStatus"/>
+							<ObjectIdentifier title="{dealerRef} ({rmaId})" id="rmaId"/>
+							<ObjectStatus text="{statusText}" id="rmaStatus" state="{ parts: [ {path: 'status' }  ] , formatter: '.formatter.rmaStatus' }"/>
 							<Text text="{salesOrder}" id="rmaSalesOrder"/>
 							<Text text="{delivery}" id="rmaDelivery"/>
-							<Text text="{billingDocument}" id="rmaBillingDocument"/>
-							<Text text="{dateCompleted}" id="rmaDateCompleted"/>
+							<Text text="{invoice}" id="rmaBillingDocument"/>
+							<Text text="{completedOn}" id="rmaDateCompleted"/>
 						</cells>
 					</ColumnListItem>
 				</items>
