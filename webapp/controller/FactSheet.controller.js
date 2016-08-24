@@ -112,13 +112,11 @@ sap.ui.define([
 		 * @public
 		 */
 		onCreateRma: function() {
-<<<<<<< HEAD
+
 			var sUrl = this.getModel("factSheetView").getProperty("/rmaUrl")
 						.replace("FPM_EDIT_MODE=R","FPM_EDIT_MODE=C")
 						.replace("RMA_ID=","CUSTOMER_ID=" + this._sAccountId);
-=======
-			var sUrl = this.getModel("factSheetView").getProperty("/rmaUrl").replace("FPM_EDIT_MODE=R","FPM_EDIT_MODE=C");
->>>>>>> branch 'master' of https://github.com/themanmountain/sap-customer-overview
+
 			window.open(sUrl, "_blank");
 		},
 		

@@ -335,7 +335,6 @@ sap.ui.define([
 
 			return oResult;
 
-<<<<<<< HEAD
 		},
 		
 		/**
@@ -357,8 +356,6 @@ sap.ui.define([
 					email: "",
 					includeArchived: false
 				});
-=======
->>>>>>> branch 'master' of https://github.com/themanmountain/sap-customer-overview
 		}
 
 	});
