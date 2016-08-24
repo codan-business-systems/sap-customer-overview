@@ -49,20 +49,12 @@ sap.ui.define([
 				shareSendEmailMessage: this.getResourceBundle().getText("shareSendEmailSearchMessage", [location.href]),
 				tableNoDataText: this.getResourceBundle().getText("tableNoDataText"),
 				tableBusyDelay: 0,
-				serialNumber: "",
-				name: "",
-				country: "",
-				rmaId: "",
-				street: "",
-				city: "",
-				postcode: "",
-				region: "",
-				telephone: "",
-				email: "",
-				includeArchived: false
+				criteria : { }	// Populated in _initSearchCriteria
 			});
 
 			this.setModel(oViewModel, "searchView");
+			
+			this._initSearchCriteria( );
 
 			// Call the BaseController's onInit method (in particular to initialise the extra JSON models)
 			BaseController.prototype.onInit.apply(this, arguments);
@@ -150,7 +142,7 @@ sap.ui.define([
 
 			// Also add the archived flag
 			aFilters = this._addFilter("archivedFlag", aFilters);
-			
+
 			// Update the table binding
 			this.getView().byId("searchResultsTable").getBinding("items").filter(aFilters);
 		},
@@ -240,6 +232,14 @@ sap.ui.define([
 				this._oCreateCustomerDialog.close();
 			}
 		},
+		
+		/**
+		 * Event handler to clear selection criteria
+		 * @public
+		 */
+		onClearSearch: function() {
+			this._initSearchCriteria();
+		},
 
 		/* =========================================================== */
 		/* internal methods                                            */
@@ -266,7 +266,7 @@ sap.ui.define([
 		 */
 		_addFilter: function(sProperty, aFilters) {
 
-			var sValue = this.getModel("searchView").getProperty("/" + sProperty);
+			var sValue = this.getModel("searchView").getProperty("/criteria/" + sProperty);
 			if (sValue && sValue !== "") {
 				aFilters.push(new sap.ui.model.Filter(sProperty, this._deriveFilterOperator(sProperty, sValue), sValue));
 			}
@@ -279,9 +279,9 @@ sap.ui.define([
 		 * @private
 		 */
 		_setRegionFilter: function(sCountryKey) {
-			
+
 			var oBinding = this.byId("selRegion").getBinding("items");
-			
+
 			if (!oBinding) {
 				return;
 			}
@@ -335,6 +335,30 @@ sap.ui.define([
 
 			return oResult;
 
+<<<<<<< HEAD
+		},
+		
+		/**
+		 * Clears/initialises the search criteria values for the search view
+		 * @private
+		 */ 
+		
+		_initSearchCriteria: function( ) {
+			this.getModel("searchView").setProperty("/criteria", {
+					serialNumber: "",
+					name: "",
+					country: "",
+					rmaId: "",
+					street: "",
+					city: "",
+					postcode: "",
+					region: "",
+					telephone: "",
+					email: "",
+					includeArchived: false
+				});
+=======
+>>>>>>> branch 'master' of https://github.com/themanmountain/sap-customer-overview
 		}
 
 	});

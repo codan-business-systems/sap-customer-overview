@@ -47,6 +47,59 @@ sap.ui.define([
 			},
 			
 			/**
+<<<<<<< HEAD
+<<<<<<< HEAD
+			 * Formats an RMA Document Id depending on whether it has a description or not
+			 * @param {string} sId Document Id
+			 * @param {string} sDesc Description
+			 * @returns {string} Formatted document identifier
+			 */
+			rmaDocumentId: function(sId, sDesc) {
+				if (!sDesc) {
+					return sId;
+				} else {
+					return sDesc + " (" + sId + ")";
+				}
+			},
+			
+			/**
+			 * Format RMA status text based on the status
+			 * @param {string} sStatus Status Code
+			 * @return {sap.ui.core.ValueState} containing object header state
+			 * @public
+			 * 
+			 */
+			rmaStatus: function(sStatus) {
+				var sResult = sap.ui.core.ValueState.None;
+				
+				switch (sStatus) {
+					case "CANC" :
+						sResult = sap.ui.core.ValueState.Error;
+						break;
+				    case "INIT" :
+				    	sResult = sap.ui.core.ValueState.Error;
+				    	break;
+				    case "BOOK" :
+				    	sResult = sap.ui.core.ValueState.Warning;
+				    	break;
+				    case "REPA" :
+				    	sResult = sap.ui.core.ValueState.Warning;
+				    	break;
+				    case "VEND" :
+				    	sResult = sap.ui.core.ValueState.Error;
+				    	break;
+				    case "APPR" :
+				    	sResult = sap.ui.core.ValueState.Error;
+				    	break;
+				    case "SHIP" :
+				    	sResult = sap.ui.core.ValueState.Warning;
+				    	break;
+				    case "COMP" :
+				    	sResult = sap.ui.core.ValueState.Success;
+				    	break;
+				}
+				return sResult; 
+=======
 			 * Format RMA status text based on the status
 			 * @param {string} sStatus Status Code
 			 * @return {sap.ui.core.ValueState} containing object header state
@@ -83,6 +136,7 @@ sap.ui.define([
 				    	break;
 				}
 				return sResult;
+>>>>>>> branch 'master' of https://github.com/themanmountain/sap-customer-overview
 			}
 
 		};
