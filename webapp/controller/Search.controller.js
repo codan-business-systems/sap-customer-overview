@@ -356,7 +356,7 @@ sap.ui.define([
 					email: "",
 					includeArchived: false
 				});
-		}
+		} 
 
 	});
 });

@@ -46,7 +46,7 @@
 				<columns>
 					<Column id="colRmaDocumentId" width="20em">
 						<Text text="{i18n>colRmaDocumentId}" id="colRmaDocumentIdHeader"/>
-					</Column>
+					</Column> 
 					<Column id="colRmaStatus">
 						<Text text="{i18n>colRmaStatus}" id="colRmaStatusHeader"/>
 					</Column>					

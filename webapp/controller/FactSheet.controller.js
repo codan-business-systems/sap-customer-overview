@@ -113,7 +113,8 @@ sap.ui.define([
 		 */
 		onCreateRma: function() {
 			var sUrl = this.getModel("factSheetView").getProperty("/rmaUrl")
-						.replace("FPM_EDIT_MODE=R","FPM_EDIT_MODE=C&CUSTOMER_ID=" + this._sAccountId);
+						.replace("FPM_EDIT_MODE=R","FPM_EDIT_MODE=C")
+						.replace("RMA_ID=","CUSTOMER_ID=" + this._sAccountId);
 			window.open(sUrl, "_blank");
 		},
 		

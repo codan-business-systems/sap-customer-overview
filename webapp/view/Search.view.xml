@@ -80,4 +80,4 @@
 			<Button text="{i18n>btnCreateCustomer}" press="onCreateCustomer" visible="false"/>
 		</semantic:customFooterContent>
 	</semantic:FullscreenPage>
-</mvc:View>
+</mvc:View> 
