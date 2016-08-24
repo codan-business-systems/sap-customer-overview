@@ -15,6 +15,8 @@ sap.ui.define([
 	return BaseController.extend("zcustoview.controller.FactSheet", {
 
 		formatter: formatter,
+		
+		_sAccountId: "",
 
 		/* =========================================================== */
 		/* lifecycle methods                                           */
@@ -110,7 +112,8 @@ sap.ui.define([
 		 * @public
 		 */
 		onCreateRma: function() {
-			var sUrl = this.getModel("factSheetView").getProperty("/rmaUrl").replace("FPM_EDIT_MODE=R","FPM_EDIT_MODE=C");
+			var sUrl = this.getModel("factSheetView").getProperty("/rmaUrl")
+						.replace("FPM_EDIT_MODE=R","FPM_EDIT_MODE=C&CUSTOMER_ID=" + this._sAccountId);
 			window.open(sUrl, "_blank");
 		},
 		
@@ -158,16 +161,16 @@ sap.ui.define([
 		 * @private
 		 */
 		_onObjectMatched: function(oEvent) {
-			var sObjectId = oEvent.getParameter("arguments").objectId;
+			this._sAccountId = oEvent.getParameter("arguments").objectId;
 			this.getModel().metadataLoaded().then(function() {
 				var sObjectPath = this.getModel().createKey("Customers", {
-					account: sObjectId
+					account: this._sAccountId
 				});
 				this._bindView("/" + sObjectPath);
 			}.bind(this));
 
 			this.getModel("factSheetView").setProperty("/accountDetailsTitle",
-				this.getResourceBundle().getText("factSheetAccountDetails", [sObjectId])
+				this.getResourceBundle().getText("factSheetAccountDetails", [this._sAccountId])
 			);
 		},
 

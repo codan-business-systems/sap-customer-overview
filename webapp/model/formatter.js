@@ -47,6 +47,20 @@ sap.ui.define([
 			},
 			
 			/**
+			 * Formats an RMA Document Id depending on whether it has a description or not
+			 * @param {string} sId Document Id
+			 * @param {string} sDesc Description
+			 * @returns {string} Formatted document identifier
+			 */
+			rmaDocumentId: function(sId, sDesc) {
+				if (!sDesc) {
+					return sId;
+				} else {
+					return sDesc + " (" + sId + ")";
+				}
+			},
+			
+			/**
 			 * Format RMA status text based on the status
 			 * @param {string} sStatus Status Code
 			 * @return {sap.ui.core.ValueState} containing object header state

@@ -40,11 +40,11 @@
 						<Title id="tableHeader" text="{factSheetView>/rmaDocumentsTitle}"/>
 						<ToolbarSpacer/>
 						<Button press="onRmaRefresh"   icon="sap-icon://refresh"/>
-						<Button press="onCreateRma" icon="sap-icon://add"/>
+						<Button press="onCreateRma" icon="sap-icon://add" text="{i18n>btnCreateRMA}" />
 					</Toolbar>
 				</headerToolbar>
 				<columns>
-					<Column id="colRmaDocumentId">
+					<Column id="colRmaDocumentId" width="20em">
 						<Text text="{i18n>colRmaDocumentId}" id="colRmaDocumentIdHeader"/>
 					</Column>
 					<Column id="colRmaStatus">
@@ -66,7 +66,7 @@
 				<items>
 					<ColumnListItem type="Navigation" press="onRmaDocumentSelect">
 						<cells>
-							<ObjectIdentifier title="{dealerRef} ({rmaId})" id="rmaId"/>
+							<ObjectIdentifier title="{ parts: [ {path: 'rmaId'}, {path: 'description'} ], formatter: '.formatter.rmaDocumentId' }" id="rmaId"/>
 							<ObjectStatus text="{statusText}" id="rmaStatus" state="{ parts: [ {path: 'status' }  ] , formatter: '.formatter.rmaStatus' }"/>
 							<Text text="{salesOrder}" id="rmaSalesOrder"/>
 							<Text text="{delivery}" id="rmaDelivery"/>

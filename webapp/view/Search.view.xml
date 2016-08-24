@@ -7,25 +7,25 @@
 				<f:content>
 					<HBox visible="false">
 						<Label id="labelSerialNo" text="{i18n>labelSearchSerialNo}" textAlign="Right" width="100%"/>
-						<Input id="Name" value="{searchView>/serialNo}" maxLength="40"/>
+						<Input id="Name" value="{searchView>/criteria/serialNo}" maxLength="40"/>
 					</HBox>
 					<Label id="labelAccount" text="{i18n>labelSearchAccount}" textAlign="Right" width="100%"/>
-					<Input id="Account" value="{searchView>/name}" maxLength="40"/>
+					<Input id="Account" value="{searchView>/criteria/name}" maxLength="40"/>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Right" width="100%"/>
-					<Select id="selCountry" selectedKey="{searchView>/country}" change="onCountrySelect" items="{path: 'countries>/'}">
+					<Select id="selCountry" selectedKey="{searchView>/criteria/country}" change="onCountrySelect" items="{path: 'countries>/'}">
 						<core:Item text="{countries>name}" key="{countries>key}"/>
 					</Select>
 					<Label id="labelRMA" text="{i18n>labelSearchRMA}" textAlign="Right" width="100%"/>
-					<Input id="transaction" value="{searchView>/rmaId}" maxLength="6"/>
+					<Input id="transaction" value="{searchView>/criteria/rmaId}" maxLength="6"/>
 					<Label id="labelPostcodeRegion" text="{i18n>labelSearchPostcodeRegion}" textAlign="Right" width="100%"/>
-					<Input id="postcode" value="{searchView>/postcode}" maxLength="10"/>
-					<Select id="selRegion" selectedKey="{searchView>/region}" items="{path: 'regions>/'}">
+					<Input id="postcode" value="{searchView>/criteria/postcode}" maxLength="10"/>
+					<Select id="selRegion" selectedKey="{searchView>/criteria/region}" items="{path: 'regions>/'}">
 						<core:Item text="{regions>name}" key="{regions>key}"/>
 					</Select>
 					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}" textAlign="Right" width="100%"/>
-					<Input id="telephone" value="{searchView>/telephone}" maxLength="16"/>
+					<Input id="telephone" value="{searchView>/criteria/telephone}" maxLength="16"/>
 					<Label id="labelEmail" text="{i18n>labelSearchEmail}" textAlign="Right" width="100%"/>
-					<Input id="email" value="{searchView>/email}" maxLength="255"/>
+					<Input id="email" value="{searchView>/criteria/email}" maxLength="255"/>
 				</f:content>
 			</f:SimpleForm>
 			<f:SimpleForm layout="ResponsiveGridLayout" minWidth="1024" id="customerSearch" editable="false" backgroundDesign="transparent" columnsL="1">
@@ -35,17 +35,18 @@
 				minWidth="1024" backgroundDesign="Solid">
 				<f:content>
 					<Label text="" width="100%"/>
-					<CheckBox id="chkIncludeArchived" text="{i18n>labelIncludeArchived}" selected="{searchView>/includeArchived}" />
+					<CheckBox id="chkIncludeArchived" text="{i18n>labelIncludeArchived}" selected="{searchView>/criteria/includeArchived}" />
 					<Label text="" width="100%"/>
-					<Button width="100px" text="{i18n>btnSearch}" id="search" press="onSearch"/>
+					<Button width="100px" text="{i18n>btnSearch}" id="btnSearch" press="onSearch"/>
+					<Button text="{i18n>btnClearSearch}" id="btnClearSearch" press="onClearSearch"/>
 				</f:content>
 			</f:SimpleForm>
-			<Table id="searchResultsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{searchView>/tableNoDataText}"
-				busyIndicatorDelay="{searchView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
+			<Table id="searchResultsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{searchView>/criteria/tableNoDataText}"
+				busyIndicatorDelay="{searchView>/criteria/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
 				updateFinished="onUpdateFinished" items="{ path: '/Customers', sorter: { path: 'name', descending: false } }">
 				<headerToolbar>
 					<Toolbar>
-						<Title id="tableHeader" text="{searchView>/searchTableTitle}"/>
+						<Title id="tableHeader" text="{searchView>/criteria/searchTableTitle}"/>
 						<ToolbarSpacer/>
 					</Toolbar>
 				</headerToolbar>
@@ -56,18 +57,6 @@
 					<Column id="colAddress">
 						<Text text="{i18n>searchColAddress}" id="colAddressHeader"/>
 					</Column>
-					<!--<Column id="colStreet">
-						<Text text="{i18n>searchColStreet}" id="colStreetHeader"/>
-					</Column>
-					<Column id="colCity">
-						<Text text="{i18n>searchColCity}" id="colCityHeader"/>
-					</Column>
-					<Column id="colPostcode">
-						<Text text="{i18n>searchColPostcode}" id="colPostcodeHeader"/>
-					</Column>
-					<Column id="colRegion">
-						<Text text="{i18n>searchColRegion}" id="colRegionHeader"/>
-					</Column>-->
 					<Column id="colCountry">
 						<Text text="{i18n>searchColCountry}" id="colCountryHeader"/>
 					</Column>
