@@ -231,7 +231,8 @@ sap.ui.define([
 				oResourceBundle.getText("shareSendEmailObjectMessage", [sObjectName, sObjectId, location.href]));
 
 			oViewModel.setProperty("/rmaDocumentsTitle",
-				this.getResourceBundle().getText("factSheetRmaDocuments", ["0"])
+				this.getResourceBundle().getText("factSheetRmaDocuments", 
+					this.byId("rmaDocumentsTable").getBinding("items").getLength())
 			);
 		}
 

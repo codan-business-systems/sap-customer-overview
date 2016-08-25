@@ -2,8 +2,10 @@
 	xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
 	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="true" title="{i18n>factSheetViewTitle}"
 		busy="{factSheetView>/busy}" busyIndicatorDelay="{factSheetView>/delay}">
-		<ObjectHeader title="{factSheetView>/accountDetailsTitle}"></ObjectHeader>
+
 		<semantic:content>
+			<ObjectHeader title="{name} ({account})"></ObjectHeader>
+			<MessageStrip text="{isEditableReason}" visible="{= ${isEditable} ? false : true }" showIcon="true" showCloseButton="true" type="Error"/>
 			<f:SimpleForm columnsL="2" columnsM="2" editable="true" emptySpanL="0" emptySpanM="0" adjustLabelSpan="false" id="modifyCustomerForm1"
 				labelSpanL="4" labelSpanM="12" layout="ResponsiveGridLayout" backgroundDesign="Solid">
 				<f:content>
@@ -40,7 +42,7 @@
 						<Title id="tableHeader" text="{factSheetView>/rmaDocumentsTitle}"/>
 						<ToolbarSpacer/>
 						<Button press="onRmaRefresh"   icon="sap-icon://refresh"/>
-						<Button press="onCreateRma" icon="sap-icon://add" text="{i18n>btnCreateRMA}" />
+						<Button press="onCreateRma" icon="sap-icon://add" text="{i18n>btnCreateRMA}" enabled="{= ${isEditable} ? true : false }" />
 					</Toolbar>
 				</headerToolbar>
 				<columns>

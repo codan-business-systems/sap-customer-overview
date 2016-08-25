@@ -24,6 +24,11 @@ sap.ui.define([
 			var oTitlesModel = new JSONModel();
 			oTitlesModel.loadData("../webapp/model/titles.json");
 			this.setModel(oTitlesModel, "titles");
+			
+			// Initialise the env data model (reads from an odata model and stores the first entry)
+			var oEnv = new JSONModel();
+			oEnv.setData({ minelabFlag: false }); //Default view is to hide minelab functionality
+			this.setModel(oEnv, "env");
 
 			// Check that the user has a valid sales office assignment
 			// Set Busy Indicator immediately while we do this check
@@ -33,9 +38,10 @@ sap.ui.define([
 			if (oEnvModel) {
 
 				oEnvModel.read("/EnvironmentInfos", {
-					success: function() {
+					success: function(oData) {
+						this.getModel("env").setData(oData.results[0],false);
 						BusyIndicator.hide();
-					},
+					}.bind(this),
 					error: function() {
 						this.raiseErrorDialog(this.getResourceBundle().getText("noSalesOfficeAssignment"));
 					}.bind(this)

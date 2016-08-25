@@ -49,12 +49,13 @@ sap.ui.define([
 				shareSendEmailMessage: this.getResourceBundle().getText("shareSendEmailSearchMessage", [location.href]),
 				tableNoDataText: this.getResourceBundle().getText("tableNoDataText"),
 				tableBusyDelay: 0,
-				criteria : { }	// Populated in _initSearchCriteria
+				showCreateCustomer: false,
+				criteria: {} // Populated in _initSearchCriteria
 			});
 
 			this.setModel(oViewModel, "searchView");
-			
-			this._initSearchCriteria( );
+
+			this._initSearchCriteria();
 
 			// Call the BaseController's onInit method (in particular to initialise the extra JSON models)
 			BaseController.prototype.onInit.apply(this, arguments);
@@ -114,7 +115,7 @@ sap.ui.define([
 			aFilters = this._addFilter("serialNumber", aFilters);
 
 			// Account
-			aFilters = this._addFilter("name", aFilters);
+			aFilters = this._addFilter("account", aFilters);
 
 			// Country
 			aFilters = this._addFilter("country", aFilters);
@@ -141,7 +142,7 @@ sap.ui.define([
 			}
 
 			// Also add the archived flag
-			aFilters = this._addFilter("archivedFlag", aFilters);
+			aFilters.push(new sap.ui.model.Filter("archived", sap.ui.model.FilterOperator.EQ, this.getModel("searchView").getProperty("/criteria/archived")));
 
 			// Update the table binding
 			this.getView().byId("searchResultsTable").getBinding("items").filter(aFilters);
@@ -166,21 +167,25 @@ sap.ui.define([
 
 			// Instantiate the Create New Customer dialog
 			if (!this._oCreateCustomerDialog) {
-				this._oCreateCustomerDialog = sap.ui.xmlfragment("zcustoview.view.CreateCustomer");
+				this._oCreateCustomerDialog = sap.ui.xmlfragment("zcustoview.view.CreateCustomer", this);
+				this._oCreateCustomerDialog.addButton(
+					new Button({
+						text: "{i18n>btnCreateCustomer}",
+						press: this.onSubmitCustomer.bind(this),
+						type: "Accept"
+					}));
 				this._oCreateCustomerDialog.addButton(
 					new Button({
 						text: "{i18n>btnCancel}",
-						press: this.onCancel.bind(this)
-					})
-				);
+						press: this.onCancel.bind(this),
+						type: "Reject"
+					}));
 				this.getView().addDependent(this._oCreateCustomerDialog);
 			}
 
-			// Create a new entry in the model
-			//	this._oContext = this.getModel().createEntry("/Customers", {
-			//		
-			//	});
-			//	this.getView().getBindingContext(this._oContext);
+		//	Create a new entry in the model
+			this._oContext = this.getModel().createEntry("Customers", {});
+			this.getView().getBindingContext(this._oContext);
 
 			this._oCreateCustomerDialog.open();
 
@@ -232,7 +237,7 @@ sap.ui.define([
 				this._oCreateCustomerDialog.close();
 			}
 		},
-		
+
 		/**
 		 * Event handler to clear selection criteria
 		 * @public
@@ -268,7 +273,8 @@ sap.ui.define([
 
 			var sValue = this.getModel("searchView").getProperty("/criteria/" + sProperty);
 			if (sValue && sValue !== "") {
-				aFilters.push(new sap.ui.model.Filter(sProperty, this._deriveFilterOperator(sProperty, sValue), sValue));
+				aFilters.push(new sap.ui.model.Filter(sProperty, this._deriveFilterOperator(sProperty, sValue), sValue.replace(new RegExp("[\*]+",
+					'g'), "")));
 			}
 			return aFilters;
 		},
@@ -300,6 +306,14 @@ sap.ui.define([
 				and: false
 			}));
 
+			if (this._oCreateCustomerDialog) {
+				oBinding = sap.ui.getCore().byId("dlgSelRegion").getBinding("items");
+				oBinding.filter(new sap.ui.model.Filter({
+					filters: aFilters,
+					and: false
+				}));
+			}
+
 		},
 
 		/**
@@ -320,12 +334,12 @@ sap.ui.define([
 
 				// If the search string has a * at the start only
 				if (sSearch.search(/^\*.+[^\*]$/) === 0) {
-					oResult = sap.ui.model.FilterOperator.StartsWith;
+					oResult = sap.ui.model.FilterOperator.EndsWith;
 				} else
 
 				// If the search string has a * at the end only
 				if (sSearch.search(/^[^\*].+\*$/) === 0) {
-					oResult = sap.ui.model.FilterOperator.EndsWith;
+					oResult = sap.ui.model.FilterOperator.StartsWith;
 				} else {
 					// Just use contains
 					oResult = sap.ui.model.FilterOperator.Contains;
@@ -336,26 +350,26 @@ sap.ui.define([
 			return oResult;
 
 		},
-		
+
 		/**
 		 * Clears/initialises the search criteria values for the search view
 		 * @private
-		 */ 
-		
-		_initSearchCriteria: function( ) {
+		 */
+
+		_initSearchCriteria: function() {
 			this.getModel("searchView").setProperty("/criteria", {
-					serialNumber: "",
-					name: "",
-					country: "",
-					rmaId: "",
-					street: "",
-					city: "",
-					postcode: "",
-					region: "",
-					telephone: "",
-					email: "",
-					includeArchived: false
-				});
+				serialNumber: "",
+				account: "",
+				country: "",
+				rmaId: "",
+				street: "",
+				city: "",
+				postcode: "",
+				region: "",
+				telephone: "",
+				email: "",
+				archived: false
+			});
 		}
 
 	});

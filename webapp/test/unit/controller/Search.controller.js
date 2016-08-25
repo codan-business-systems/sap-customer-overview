@@ -76,13 +76,13 @@ sap.ui.define([
 	QUnit.test("Other fields should use Starts with when passed format '*Something'", function(assert) {
 		var oFilterOperator = this.oSearchController._deriveFilterOperator("anything", "*something");
 		
-		assert.strictEqual(oFilterOperator, sap.ui.model.FilterOperator.StartsWith);
+		assert.strictEqual(oFilterOperator, sap.ui.model.FilterOperator.sWith);
 	});
 	
 	QUnit.test("Other fields should use Ends with when passed format 'Something*'", function(assert) {
 		var oFilterOperator = this.oSearchController._deriveFilterOperator("anything", "something*");
 		
-		assert.strictEqual(oFilterOperator, sap.ui.model.FilterOperator.EndsWith);
+		assert.strictEqual(oFilterOperator, sap.ui.model.FilterOperator.StartsWith);
 	});
 	
 	QUnit.test("Other fields should use Contains with when passed format '*Something*'", function(assert) {

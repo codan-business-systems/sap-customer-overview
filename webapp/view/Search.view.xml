@@ -10,7 +10,7 @@
 						<Input id="Name" value="{searchView>/criteria/serialNo}" maxLength="40"/>
 					</HBox>
 					<Label id="labelAccount" text="{i18n>labelSearchAccount}" textAlign="Right" width="100%"/>
-					<Input id="Account" value="{searchView>/criteria/name}" maxLength="40"/>
+					<Input id="Account" value="{searchView>/criteria/account}" maxLength="40"/>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Right" width="100%"/>
 					<Select id="selCountry" selectedKey="{searchView>/criteria/country}" change="onCountrySelect" items="{path: 'countries>/'}">
 						<core:Item text="{countries>name}" key="{countries>key}"/>
@@ -35,18 +35,18 @@
 				minWidth="1024" backgroundDesign="Solid">
 				<f:content>
 					<Label text="" width="100%"/>
-					<CheckBox id="chkIncludeArchived" text="{i18n>labelIncludeArchived}" selected="{searchView>/criteria/includeArchived}" />
+					<CheckBox id="chkIncludeArchived" text="{i18n>labelIncludeArchived}" selected="{searchView>/criteria/archived}" />
 					<Label text="" width="100%"/>
 					<Button width="100px" text="{i18n>btnSearch}" id="btnSearch" press="onSearch"/>
 					<Button text="{i18n>btnClearSearch}" id="btnClearSearch" press="onClearSearch"/>
 				</f:content>
 			</f:SimpleForm>
-			<Table id="searchResultsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{searchView>/criteria/tableNoDataText}"
-				busyIndicatorDelay="{searchView>/criteria/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
+			<Table id="searchResultsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{searchView>/tableNoDataText}"
+				busyIndicatorDelay="{searchView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
 				updateFinished="onUpdateFinished" items="{ path: '/Customers', sorter: { path: 'name', descending: false } }">
 				<headerToolbar>
 					<Toolbar>
-						<Title id="tableHeader" text="{searchView>/criteria/searchTableTitle}"/>
+						<Title id="tableHeader" text="{searchView>/searchTableTitle}"/>
 						<ToolbarSpacer/>
 					</Toolbar>
 				</headerToolbar>
@@ -77,7 +77,7 @@
 			</Table>
 		</semantic:content>
 		<semantic:customFooterContent>
-			<Button text="{i18n>btnCreateCustomer}" press="onCreateCustomer" visible="false"/>
+			<Button text="{i18n>btnCreateCustomer}" press="onCreateCustomer" visible="{env>/minelabFlag}"/>
 		</semantic:customFooterContent>
 	</semantic:FullscreenPage>
-</mvc:View> 
+</mvc:View>
