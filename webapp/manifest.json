@@ -88,7 +88,9 @@
 				"settings": {
 					"metadataUrlParams": {
 						"sap-documentation": "heading"
-					}
+					},
+					"defaultCountMode": "Inline",
+					"defaultBindingMode": "TwoWay"
 				}
 			},
 			"environmentInfo": {

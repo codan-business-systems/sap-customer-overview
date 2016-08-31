@@ -2,7 +2,7 @@
 	xmlns:semantic="sap.m.semantic" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form">
 	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="true" title="{i18n>searchViewTitle}">
 		<semantic:content>
-			<f:SimpleForm columnsL="1" editable="true" emptySpanL="4" emptySpanM="4" id="SearchQueryParams" labelSpanL="3" labelSpanM="3"
+			<f:SimpleForm columnsL="1" editable="true" id="SearchQueryParams" labelSpanL="3" labelSpanM="3"
 				layout="ResponsiveGridLayout" minWidth="1024" backgroundDesign="Solid">
 				<f:content>
 					<HBox visible="false">
@@ -12,14 +12,14 @@
 					<Label id="labelAccount" text="{i18n>labelSearchAccount}" textAlign="Right" width="100%"/>
 					<Input id="Account" value="{searchView>/criteria/account}" maxLength="40"/>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Right" width="100%"/>
-					<Select id="selCountry" selectedKey="{searchView>/criteria/country}" change="onCountrySelect" items="{path: 'countries>/'}">
+					<Select id="selCountry" selectedKey="{searchView>/criteria/country}" change="onCountrySelect" items="{path: 'countries>/', sorter: { path: 'name' } }">
 						<core:Item text="{countries>name}" key="{countries>key}"/>
 					</Select>
 					<Label id="labelRMA" text="{i18n>labelSearchRMA}" textAlign="Right" width="100%"/>
 					<Input id="transaction" value="{searchView>/criteria/rmaId}" maxLength="6"/>
 					<Label id="labelPostcodeRegion" text="{i18n>labelSearchPostcodeRegion}" textAlign="Right" width="100%"/>
 					<Input id="postcode" value="{searchView>/criteria/postcode}" maxLength="10"/>
-					<Select id="selRegion" selectedKey="{searchView>/criteria/region}" items="{path: 'regions>/'}">
+					<Select id="selRegion" selectedKey="{searchView>/criteria/region}" items="{path: 'regions>/', sorter: { path: 'name' } }">
 						<core:Item text="{regions>name}" key="{regions>key}"/>
 					</Select>
 					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}" textAlign="Right" width="100%"/>

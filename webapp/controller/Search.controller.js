@@ -61,7 +61,8 @@ sap.ui.define([
 			BaseController.prototype.onInit.apply(this, arguments);
 
 			// Ensure the default filtering is set on the region
-			this._setRegionFilter("");
+			this.setRegionFilter(this.byId("selRegion"), "");
+			this.setRegionFilter(sap.ui.getCore().byId("dlgSelRegion"), "");
 
 			// Make sure, busy indication is showing immediately so there is no
 			// break after the busy indication for loading the view's meta data is
@@ -70,6 +71,8 @@ sap.ui.define([
 				// Restore original busy indicator delay for search's table
 				oViewModel.setProperty("/tableBusyDelay", iOriginalBusyDelay);
 			});
+			
+			BaseController.prototype.setView(this.getView());
 
 		},
 
@@ -110,34 +113,69 @@ sap.ui.define([
 			//Retrieve the entered properties from the searchView model
 			//and map to a filters array
 			var aFilters = [];
+			
+			//Check that a "strong" search criteria has been entered
+			var bStrong = false;
+			
+			var aFilterLength = 0;
 
 			// Serial No
 			aFilters = this._addFilter("serialNumber", aFilters);
+			if (aFilters.length > aFilterLength) {
+				bStrong = true;
+				aFilterLength = aFilters.length;
+			}
 
 			// Account
 			aFilters = this._addFilter("account", aFilters);
+			if (aFilters.length > aFilterLength) {
+				bStrong = true;
+				aFilterLength = aFilters.length;
+			}
 
 			// Country
 			aFilters = this._addFilter("country", aFilters);
+			aFilterLength = aFilters.length;
 
 			// Transaction (RMA) ID
 			aFilters = this._addFilter("rmaId", aFilters);
+			if (aFilters.length > aFilterLength) {
+				bStrong = true;
+				aFilterLength = aFilters.length;
+			}
 
-			// Street
 			// Postcode
 			aFilters = this._addFilter("postcode", aFilters);
+			if (aFilters.length > aFilterLength) {
+				bStrong = true;
+				aFilterLength = aFilters.length;
+			}
 
 			// Region
 			aFilters = this._addFilter("region", aFilters);
+			aFilterLength = aFilters.length;
 
 			// Telephone
 			aFilters = this._addFilter("telephone", aFilters);
+			if (aFilters.length > aFilterLength) {
+				bStrong = true;
+				aFilterLength = aFilters.length;
+			}
 
 			// Email
 			aFilters = this._addFilter("email", aFilters);
+			if (aFilters.length > aFilterLength) {
+				bStrong = true;
+				aFilterLength = aFilters.length;
+			}
 
 			if (aFilters.length === 0) {
 				this.raiseErrorDialog(this.getResourceBundle().getText("noSearchCriteria"));
+				return;
+			}
+			
+			if (!bStrong) {
+				this.raiseErrorDialog(this.getResourceBundle().getText("notEnoughSearchCriteria"));
 				return;
 			}
 
@@ -155,7 +193,14 @@ sap.ui.define([
 		 */
 		onCountrySelect: function(oEvent) {
 			// Ensure that the region filter is set
-			this._setRegionFilter(oEvent.getParameters().selectedItem.getKey());
+			if (this._oCreateCustomerDialog && this._oCreateCustomerDialog.isOpen()) {
+				this.setRegionFilter(sap.ui.getCore().byId("dlgSelRegion"), oEvent.getParameters().selectedItem.getKey());
+				
+				oEvent.getSource().removeStyleClass("selectError");
+			} else {
+				this.setRegionFilter(this.byId("selRegion"), oEvent.getParameters().selectedItem.getKey());
+			}
+			
 		},
 
 		/**
@@ -183,9 +228,12 @@ sap.ui.define([
 				this.getView().addDependent(this._oCreateCustomerDialog);
 			}
 
-		//	Create a new entry in the model
+			//	Create a new entry in the model
 			this._oContext = this.getModel().createEntry("Customers", {});
-			this.getView().getBindingContext(this._oContext);
+			this.getView().setBindingContext(this._oContext);
+			
+			// Reset the region filter
+			this.setRegionFilter(sap.ui.getCore().byId("dlgSelRegion"), "");
 
 			this._oCreateCustomerDialog.open();
 
@@ -224,6 +272,25 @@ sap.ui.define([
 		 * @public
 		 */
 		onSubmitCustomer: function() {
+			
+			var oContext = this._oContext;
+			
+			// Check all mandatory fields are entered
+			var bValid = BaseController.prototype.checkMandatoryFields(oContext);
+			
+			// If all mandatory fields are entered, check that the postcode is valid.
+			if (bValid) {
+				bValid = this._checkPostcode();
+			}
+			
+			if (!bValid) {
+				
+				// Custom check for country key so that we can apply CSS to the Country select
+				sap.ui.getCore().byId("country").toggleStyleClass("selectError", this.getModel("errorState").getProperty("/country/state") === sap.ui.core.ValueState.Error); 
+			
+				this.raiseErrorDialog(this.getResourceBundle().getText("msgEnterMandatoryFields"));
+				return bValid;
+			}
 			this.getModel().submitChanges();
 		},
 
@@ -278,42 +345,17 @@ sap.ui.define([
 			}
 			return aFilters;
 		},
-
+		
 		/**
-		 * Ensures the region filter is set based on the selected Country key
-		 * @param {string} sCountryKey Key of the country selected
-		 * @private
+		 * Validate the entered postcode in the Create Customer Dialog, based on the country rule
+		 * @returns {Boolean} True if valid
 		 */
-		_setRegionFilter: function(sCountryKey) {
-
-			var oBinding = this.byId("selRegion").getBinding("items");
-
-			if (!oBinding) {
-				return;
-			}
-
-			var aFilters = [];
-			// Always start with a blank value
-			aFilters.push(new sap.ui.model.Filter("country", sap.ui.model.FilterOperator.EQ, ""));
-
-			// If a country key is passed, add that as well
-			if (sCountryKey && sCountryKey !== "") {
-				aFilters.push(new sap.ui.model.Filter("country", sap.ui.model.FilterOperator.EQ, sCountryKey));
-			}
-
-			oBinding.filter(new sap.ui.model.Filter({
-				filters: aFilters,
-				and: false
-			}));
-
-			if (this._oCreateCustomerDialog) {
-				oBinding = sap.ui.getCore().byId("dlgSelRegion").getBinding("items");
-				oBinding.filter(new sap.ui.model.Filter({
-					filters: aFilters,
-					and: false
-				}));
-			}
-
+		_checkPostcode: function() {
+			var oContext = this.getView().getBindingContext();
+			return BaseController.prototype.validatePostcode(this.getModel("countries"),
+														 oContext.getProperty("country"),
+													 oContext.getProperty("postcode")
+			);
 		},
 
 		/**

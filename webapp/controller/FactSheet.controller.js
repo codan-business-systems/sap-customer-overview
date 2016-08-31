@@ -3,18 +3,29 @@ sap.ui.define([
 	"zcustoview/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/core/routing/History",
-	"zcustoview/model/formatter"
+	"zcustoview/model/formatter",
+	"zcustoview/model/postcodeValidator",
+	"sap/ui/core/ValueState",
+	"sap/m/MessageToast",
+	"sap/m/Dialog",
+	"sap/m/Button"
 ], function(
 	BaseController,
 	JSONModel,
 	History,
-	formatter
+	formatter,
+	postcodeValidator,
+	ValueState,
+	MessageToast,
+	Dialog,
+	Button
 ) {
 	"use strict";
 
 	return BaseController.extend("zcustoview.controller.FactSheet", {
 
 		formatter: formatter,
+		postcodeValidator: postcodeValidator,
 		
 		_sAccountId: "",
 
@@ -36,7 +47,8 @@ sap.ui.define([
 					delay: 0,
 					accountDetailsTitle: "",
 					rmaDocumentsTitle: "",
-					rmaUrl: ""
+					rmaUrl: "",
+					editMode: false
 				});
 
 			// Retrieve the URL details to navigate to the RMA Web dynpro in ERP
@@ -71,6 +83,12 @@ sap.ui.define([
 
 			// Call the BaseController's onInit method (in particular to initialise the extra JSON models)
 			BaseController.prototype.onInit.apply(this, arguments);
+			
+			// Turn off automatic update after change
+			this.getOwnerComponent().getModel().setRefreshAfterChange(false);
+			
+			// Set the View back to the base controller (for validation methods)
+			BaseController.prototype.setView(this.getView());
 
 		},
 
@@ -145,12 +163,82 @@ sap.ui.define([
 		},
 		
 		/**
-		 * Triggered by pressing the refresh button on the rma tabl
+		 * Triggered by pressing the refresh button on the rma table
 		 * Refreshes the rma table binding
 		 * @public
 		 */ 
 		onRmaRefresh: function() {
 			this.getView().byId("rmaDocumentsTable").getBinding("items").refresh();
+		},
+		
+		/**
+		 * Triggered by pressing the edit mode button on the customer details view
+		 * If in edit mode - raises a confirmation dialog
+		 * If not in edit mode, turns edit mode on
+		 * @public
+		 */
+		onToggleEditMode: function() {
+			
+			var bEditMode = this.getModel("factSheetView").getProperty("/editMode");
+			
+			if (bEditMode) {
+				// Show a dialog if there are pending changes
+				if (this.getModel().hasPendingChanges()) {
+					this._showDataLossConfirmation(function () {
+						this.getModel().resetChanges();
+						this.getModel("factSheetView").setProperty("/editMode", false);
+					}.bind(this));
+				} else {
+					this.getModel("factSheetView").setProperty("/editMode", false);
+				}
+			} else {
+				this.getModel("factSheetView").setProperty("/editMode", true);
+			}
+		},
+		
+		/**
+		 * Triggered when the customer is in edit mode and elects to Save the current customer
+		 * May also be triggered when navigating to a new RMA or new Warranty registration
+		 * @returns {boolean} Success of the validation
+		 * @public
+		 */ 
+		onSave: function() {
+			var oContext = this.getView().getBindingContext();
+			
+			// First check all mandatory fields are entered
+			var bValid = BaseController.prototype.checkMandatoryFields(oContext);
+			
+			// If all mandatory fields are entered, check that the postcode is valid.
+			if (bValid) {
+				bValid = this._checkPostcode();
+			}
+			
+			if (!bValid) {
+				this.raiseErrorDialog(this.getResourceBundle().getText("msgEnterMandatoryFields"));
+				return bValid;
+			}
+			
+			this.getModel().submitChanges({
+				success : function() {
+					MessageToast.show("The data was saved successfully");
+					this.getModel("factSheetView").setProperty("/editMode", false);
+				}.bind(this),
+				error  : function() {
+					MessageToast.show("An error occurred");
+				}
+			});
+			
+		},
+		
+		/**
+		 * Triggered when the postcode value is changed
+		 * Validates the postcode and sets the error state of the control accordingly
+		 * @public
+		 */
+		onPostcodeChange : function() {
+			
+			this._checkPostcode();
+			
 		},
 
 		/* =========================================================== */
@@ -175,6 +263,11 @@ sap.ui.define([
 			this.getModel("factSheetView").setProperty("/accountDetailsTitle",
 				this.getResourceBundle().getText("factSheetAccountDetails", [this._sAccountId])
 			);
+			
+			// Reset the edit mode
+			this.getModel("factSheetView").setProperty("/editMode", false);
+			this.resetErrorStates();
+			
 		},
 
 		/**
@@ -234,6 +327,58 @@ sap.ui.define([
 				this.getResourceBundle().getText("factSheetRmaDocuments", 
 					this.byId("rmaDocumentsTable").getBinding("items").getLength())
 			);
+			
+	    	// Set up the region filter if the user hits edit mode
+			this.setRegionFilter(this.byId("selRegion"), this.getView().getBindingContext().getProperty("country"));
+		},
+		
+		_checkPostcode: function( ) {
+			
+				var oContext = this.getView().getBindingContext();
+				return BaseController.prototype.validatePostcode(this.getModel("countries"),
+														  oContext.getProperty("country"),
+														  oContext.getProperty("postcode")
+				);
+
+		},
+		
+		/**
+		 * Display a confirmation that there are pending changes and data may be lost
+		 * @param {function} fSuccess Handler for if the user selects OK
+		 * @private
+		 */
+		_showDataLossConfirmation: function(fSuccess) {
+			
+			var functionAfterClose = fSuccess;
+		
+			var dialog = new Dialog({
+				title: this.getResourceBundle().getText("errorDialogTitle"),
+				type: "Message",
+				state: "Warning",
+				id: "dataLossDialog",
+				content: new sap.m.Text({
+					text: this.getResourceBundle().getText("msgDataLossConfirmation")
+				}),
+				beginButton: new Button({
+					text: this.getResourceBundle().getText("dialogOk"),
+					press: function() {
+						if (functionAfterClose) {
+							functionAfterClose.call();
+						}
+						dialog.close();
+					}
+				}),
+				endButton: new Button({
+					text: this.getResourceBundle().getText("btnCancel"),
+					press: function() {
+						dialog.close();
+					}
+				})
+			});
+			dialog.attachAfterClose(this, function() { dialog.destroy(); }, this);
+
+			dialog.open();
+			
 		}
 
 	});

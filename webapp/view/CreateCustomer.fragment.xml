@@ -3,38 +3,47 @@
    xmlns:core="sap.ui.core"
    xmlns:f="sap.ui.layout.form">
    <Dialog
-      title="Create New Customer">
+      title="Create New Customer"
+      contentWidth="40rem">
    	<content>
-			<f:SimpleForm columnsL="1" editable="true" emptySpanL="4" emptySpanM="4"
+			<f:SimpleForm columnsL="1" editable="true"
 				id="createCustomerForm" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout"  backgroundDesign="Solid">
 				<f:content>
-					<Label id="labelTitle" text="{i18n>labelCreateTitle}" textAlign="Left" width="100%"/>
-				    <Select id="selTitle" selectedKey="{title}" items="{path: 'titles>/'}">
+					<Label id="labelTitle" text="{i18n>labelCreateTitle}" textAlign="Left" width="100%" />
+				    <Select id="selTitle" selectedKey="{title}" items="{path: 'titles>/'}" >
 						<core:Item text="{titles>title}" key="{titles>title}"/>
 					</Select>
-					<Label id="labelAccount" text="{i18n>labelCreateAccountName}" textAlign="Left" width="100%"/>
-					<Input id="AccountName" value="{name}" maxLength="40" required="true"/>
-					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Left" width="100%"/>
-					<Select id="selCountry" selectedKey="{country}" change="onCountrySelect"
-						items="{path: 'countries>/'}" required="true">
+					<Label id="labelAccount" text="{i18n>labelCreateAccountName}" textAlign="Left" width="100%" />
+					<Input id="AccountName" value="{name}" maxLength="40" valueState="{errorState>/name/state}" 
+																		valueStateText="{errorState>/name/text}"
+																		change="onFieldChange" />
+					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Left" width="100%" />
+					<Select id="country" selectedKey="{country}" change="onCountrySelect" 
+						items="{path: 'countries>/', sorter: { path: 'name' } }">
 						<core:Item text="{countries>name}" key="{countries>key}"/>
 					</Select>
-					<Label id="labelStreet" text="{i18n>labelSearchStreet}" textAlign="Left" width="100%"/>
-					<Input id="street" value="{street}" maxLength="60" required="true"/>
-					<Label id="labelCity" text="{i18n>labelSearchCity}" textAlign="Left" width="100%"/>
-					<Input id="city" value="{city}" maxLength="25" required="true"/>
-					<Label id="labelPostcode" text="{i18n>labelCreatePostcode}" textAlign="Left" width="100%"/>
-					<Input id="postcode" value="{postcode}" maxLength="10" required="true"/>
-					<Label id="labelRegion" text="{i18n>labelCreateRegion}" textAlign="Left" width="100%"/>
-					<Select id="dlgSelRegion" selectedKey="{region}" required="true"
-						items="{path: 'regions>/'}">
+					<Label id="labelStreet" text="{i18n>labelSearchStreet}" textAlign="Left" width="100%" />
+					<Input id="street" value="{street}" maxLength="60" valueState="{errorState>/street/state}" 
+																		valueStateText="{errorState>/street/text}"
+																		change="onFieldChange" />
+					<Label id="labelCity" text="{i18n>labelSearchCity}" textAlign="Left" width="100%" />
+					<Input id="city" value="{city}" maxLength="25" valueState="{errorState>/city/state}" 
+																		valueStateText="{errorState>/city/text}"
+																		change="onFieldChange" />
+					<Label id="labelPostcode" text="{i18n>labelCreatePostcode}" textAlign="Left" width="100%" />
+					<Input id="postcode" value="{postcode}" maxLength="10" valueState="{errorState>/postcode/state}"
+																						valueStateText="{errorState>/postcode/text}"
+																						change="onFieldChange" />
+					<Label id="labelRegion" text="{i18n>labelCreateRegion}" textAlign="Left" width="100%" />
+					<Select id="dlgSelRegion" selectedKey="{region}" 
+						items="{path: 'regions>/', sorter: { path: 'name' }}">
 						<core:Item text="{regions>name}" key="{regions>key}"/>
 					</Select>
-					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}" textAlign="Left" width="100%"/>
+					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}" textAlign="Left" width="100%" />
 					<Input id="telephone" value="{telephone}" maxLength="16" required="true"/>
-					<Label id="labelMobile" text="{i18n>labelCreateMobile}" textAlign="Left" width="100%"/>
+					<Label id="labelMobile" text="{i18n>labelCreateMobile}" textAlign="Left" width="100%" />
 					<Input id="mobile" value="{mobile}" maxLength="16" />
-					<Label id="labelEmail" text="{i18n>labelSearchEmail}" textAlign="Left" width="100%"/>
+					<Label id="labelEmail" text="{i18n>labelSearchEmail}" textAlign="Left" width="100%" />
 					<Input id="email" value="{email}" maxLength="255" required="true"/>
 				</f:content>
 			</f:SimpleForm>

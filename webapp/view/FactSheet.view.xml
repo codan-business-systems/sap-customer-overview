@@ -1,48 +1,68 @@
-<mvc:View controllerName="zcustoview.controller.FactSheet" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic"
-	xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
-	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="true" title="{i18n>factSheetViewTitle}"
-		busy="{factSheetView>/busy}" busyIndicatorDelay="{factSheetView>/delay}">
+<mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" controllerName="zcustoview.controller.FactSheet">
+	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="true" title="{i18n>factSheetViewTitle}" busy="{factSheetView>/busy}" busyIndicatorDelay="{factSheetView>/delay}">
 
 		<semantic:content>
-			<ObjectHeader title="{name} ({account})"></ObjectHeader>
+			<ObjectHeader title="{name} ({account})"/>
 			<MessageStrip text="{isEditableReason}" visible="{= ${isEditable} ? false : true }" showIcon="true" showCloseButton="true" type="Error"/>
-			<f:SimpleForm columnsL="2" columnsM="2" editable="true" emptySpanL="0" emptySpanM="0" adjustLabelSpan="false" id="modifyCustomerForm1"
-				labelSpanL="4" labelSpanM="12" layout="ResponsiveGridLayout" backgroundDesign="Solid">
+			<Toolbar>
+				<ToolbarSpacer/>
+				<Button press="onSave" 
+						text="{i18n>btnSave}" 
+						enabled="{factSheetView>/editMode}"
+						icon="sap-icon://save"/>
+				<Button press="onToggleEditMode" 
+						text="{= ${factSheetView>/editMode} ? 'Cancel' : 'Edit' }"
+						icon="{= ${factSheetView>/editMode} ? 'sap-icon://decline' : 'sap-icon://edit' }" 
+						enabled="{isEditable}"/>
+			</Toolbar>
+			<f:SimpleForm columnsL="2" columnsM="2" editable="true" emptySpanL="0" emptySpanM="0" adjustLabelSpan="false" id="modifyCustomerForm1" labelSpanL="4" labelSpanM="12" layout="ResponsiveGridLayout" backgroundDesign="Solid">
 				<f:content>
 					<core:Title text="{i18n>factSheetContactTitle}"/>
 					<Label id="labelTitle" text="{i18n>labelCreateTitle}"/>
-					<Input id="title" value="{title}" editable="false"/>
+					<Input id="title" value="{title}" editable="{factSheetView>/editMode}"/>
 					<Label id="labelAccount" text="{i18n>labelCreateAccountName}"/>
-					<Input id="AccountName" value="{name}" maxLength="40" editable="false"/>
+					<Input id="accountName" value="{name}" maxLength="40" editable="{factSheetView>/editMode}" valueState="{errorState>/name/state}" 
+																										   valueStateText="{errorState>/name/text}"
+																										   change="onFieldChange"/>
 					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}"/>
-					<Input id="telephone" value="{telephone}" maxLength="16" editable="false"/>
+					<Input id="telephone" value="{telephone}" maxLength="16" editable="{factSheetView>/editMode}"/>
 					<Label id="labelMobile" text="{i18n>labelCreateMobile}"/>
-					<Input id="mobile" value="{mobile}" maxLength="16" editable="false"/>
+					<Input id="mobile" value="{mobile}" maxLength="16" editable="{factSheetView>/editMode}"/>
 					<Label id="labelEmail" text="{i18n>labelSearchEmail}"/>
-					<Input id="email" value="{email}" maxLength="255" editable="false"/>
+					<Input id="email" value="{email}" maxLength="255" editable="{factSheetView>/editMode}"/>
 					<core:Title text="{i18n>factSheetAddressTitle}"/>
-					<Label id="labelStreet" text="{i18n>labelSearchStreet}"/>
-					<Input id="street" value="{street}" maxLength="60" editable="false"/>
+					<Label id="labelStreet" text="{i18n>labelSearchStreet}" />
+					<Input id="street" value="{street}" maxLength="60" editable="{factSheetView>/editMode}" valueState="{errorState>/street/state}"
+																											valueStateText="{errorState>/street/text}"
+																											change="onFieldChange"/>
 					<Label id="labelCity" text="{i18n>labelSearchCity}"/>
-					<Input id="city" value="{city}" maxLength="25" editable="false"/>
+					<Input id="city" value="{city}" maxLength="25" editable="{factSheetView>/editMode}" valueState="{errorState>/city/state}"
+																										valueStateText="{errorState>/city/text}"
+																										change="onFieldChange"/>
 					<Label id="labelPostcode" text="{i18n>labelCreatePostcode}"/>
-					<Input id="postcode" value="{postcode}" maxLength="10" editable="false"/>
+					<Input id="postcode" value="{postcode}" maxLength="10" editable="{factSheetView>/editMode}" valueState="{errorState>/postcode/state}"
+																												valueStateText="{errorState>/postcode/text}"
+																												change="onPostcodeChange"/>
 					<Label id="labelRegion" text="{i18n>labelCreateRegion}"/>
-					<Input id="region" value="{regionText}" editable="false"/>
+					<Input id="region" value="{regionText}" editable="false" visible="{= ${factSheetView>/editMode} ? false : true }"/>
+					<Select id="selRegion" selectedKey="{region}"
+						items="{path: 'regions>/'}" 
+						visible="{factSheetView>/editMode}" 
+						width="100%">
+						<core:Item text="{regions>name}" key="{regions>key}"/>
+					</Select>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}"/>
 					<Input id="country" value="{countryText}" editable="false"/>
 				</f:content>
 			</f:SimpleForm>
 			
-			<Table id="rmaDocumentsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{i18n>noRmaDocumentsText}"
-				busyIndicatorDelay="{searchView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
-				updateFinished="onRmaUpdateFinished" items="{ path: 'Repairs' }">
+			<Table id="rmaDocumentsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{i18n>noRmaDocumentsText}" busyIndicatorDelay="{searchView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false" updateFinished="onRmaUpdateFinished" items="{ path: 'Repairs' }">
 				<headerToolbar>
 					<Toolbar>
 						<Title id="tableHeader" text="{factSheetView>/rmaDocumentsTitle}"/>
 						<ToolbarSpacer/>
-						<Button press="onRmaRefresh"   icon="sap-icon://refresh"/>
-						<Button press="onCreateRma" icon="sap-icon://add" text="{i18n>btnCreateRMA}" enabled="{= ${isEditable} ? true : false }" />
+						<Button press="onRmaRefresh" icon="sap-icon://refresh"/>
+						<Button press="onCreateRma" icon="sap-icon://add" text="{i18n>btnCreateRMA}" enabled="{isEditable}"/>
 					</Toolbar>
 				</headerToolbar>
 				<columns>
@@ -73,7 +93,14 @@
 							<Text text="{salesOrder}" id="rmaSalesOrder"/>
 							<Text text="{delivery}" id="rmaDelivery"/>
 							<Text text="{invoice}" id="rmaBillingDocument"/>
-							<Text text="{completedOn}" id="rmaDateCompleted"/>
+							<Text id="rmaDateCompleted"	
+								text="{
+									path: 'completedOn',
+									type: 'sap.ui.model.type.Date',
+									formatOptions: {
+										style: 'long'
+									} }" 
+							/>
 						</cells>
 					</ColumnListItem>
 				</items>
