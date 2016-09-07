@@ -7,7 +7,7 @@
       contentWidth="40rem">
    	<content>
 			<f:SimpleForm columnsL="1" editable="true"
-				id="createCustomerForm" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout"  backgroundDesign="Solid">
+				id="createCustomerForm" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout"  backgroundDesign="Transparent">
 				<f:content>
 					<Label id="labelTitle" text="{i18n>labelCreateTitle}" textAlign="Left" width="100%" />
 				    <Select id="selTitle" selectedKey="{title}" items="{path: 'titles>/'}" >

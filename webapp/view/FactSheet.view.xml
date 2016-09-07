@@ -1,68 +1,111 @@
-<mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" controllerName="zcustoview.controller.FactSheet">
-	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="true" title="{i18n>factSheetViewTitle}" busy="{factSheetView>/busy}" busyIndicatorDelay="{factSheetView>/delay}">
-
+<mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core"
+	controllerName="zcustoview.controller.FactSheet" xmlns:suite="sap.suite.ui.commons">
+	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="true" title="{i18n>factSheetViewTitle}"
+		busy="{factSheetView>/busy}" busyIndicatorDelay="{factSheetView>/delay}">
 		<semantic:content>
-			<ObjectHeader title="{name} ({account})"/>
+			<ObjectHeader title="{name} ({account})" condensed="true" class="zSapMOHBgTransparent" id="factSheetObjectHeader" backgroundDesign="Transparent"/>
 			<MessageStrip text="{isEditableReason}" visible="{= ${isEditable} ? false : true }" showIcon="true" showCloseButton="true" type="Error"/>
-			<Toolbar>
-				<ToolbarSpacer/>
-				<Button press="onSave" 
-						text="{i18n>btnSave}" 
-						enabled="{factSheetView>/editMode}"
-						icon="sap-icon://save"/>
-				<Button press="onToggleEditMode" 
-						text="{= ${factSheetView>/editMode} ? 'Cancel' : 'Edit' }"
-						icon="{= ${factSheetView>/editMode} ? 'sap-icon://decline' : 'sap-icon://edit' }" 
-						enabled="{isEditable}"/>
-			</Toolbar>
-			<f:SimpleForm columnsL="2" columnsM="2" editable="true" emptySpanL="0" emptySpanM="0" adjustLabelSpan="false" id="modifyCustomerForm1" labelSpanL="4" labelSpanM="12" layout="ResponsiveGridLayout" backgroundDesign="Solid">
+			<f:SimpleForm columnsL="2" columnsM="2" editable="true" emptySpanL="0" emptySpanM="0" adjustLabelSpan="false" id="modifyCustomerForm1"
+				labelSpanL="4" labelSpanM="12" layout="ResponsiveGridLayout" backgroundDesign="Solid" width="auto" class="zSimpleFormMarginCentre">
 				<f:content>
 					<core:Title text="{i18n>factSheetContactTitle}"/>
 					<Label id="labelTitle" text="{i18n>labelCreateTitle}"/>
 					<Input id="title" value="{title}" editable="{factSheetView>/editMode}"/>
 					<Label id="labelAccount" text="{i18n>labelCreateAccountName}"/>
-					<Input id="accountName" value="{name}" maxLength="40" editable="{factSheetView>/editMode}" valueState="{errorState>/name/state}" 
-																										   valueStateText="{errorState>/name/text}"
-																										   change="onFieldChange"/>
+					<Input id="accountName" value="{name}" maxLength="40" editable="{factSheetView>/editMode}" valueState="{errorState>/name/state}"
+						valueStateText="{errorState>/name/text}" change="onFieldChange"/>
 					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}"/>
 					<Input id="telephone" value="{telephone}" maxLength="16" editable="{factSheetView>/editMode}"/>
 					<Label id="labelMobile" text="{i18n>labelCreateMobile}"/>
 					<Input id="mobile" value="{mobile}" maxLength="16" editable="{factSheetView>/editMode}"/>
 					<Label id="labelEmail" text="{i18n>labelSearchEmail}"/>
 					<Input id="email" value="{email}" maxLength="255" editable="{factSheetView>/editMode}"/>
-					<core:Title text="{i18n>factSheetAddressTitle}"/>
-					<Label id="labelStreet" text="{i18n>labelSearchStreet}" />
+					<Toolbar>
+						<Title text="{i18n>factSheetAddressTitle}"/>
+						<ToolbarSpacer/>
+						<Button press="onSave" text="{i18n>btnSave}" enabled="{factSheetView>/editMode}" icon="sap-icon://save"/>
+						<Button press="onToggleEditMode" text="{= ${factSheetView>/editMode} ? 'Cancel' : 'Edit' }"
+							icon="{= ${factSheetView>/editMode} ? 'sap-icon://decline' : 'sap-icon://edit' }" enabled="{isEditable}"/>
+					</Toolbar>
+					<Label id="labelStreet" text="{i18n>labelSearchStreet}"/>
 					<Input id="street" value="{street}" maxLength="60" editable="{factSheetView>/editMode}" valueState="{errorState>/street/state}"
-																											valueStateText="{errorState>/street/text}"
-																											change="onFieldChange"/>
+						valueStateText="{errorState>/street/text}" change="onFieldChange"/>
 					<Label id="labelCity" text="{i18n>labelSearchCity}"/>
 					<Input id="city" value="{city}" maxLength="25" editable="{factSheetView>/editMode}" valueState="{errorState>/city/state}"
-																										valueStateText="{errorState>/city/text}"
-																										change="onFieldChange"/>
+						valueStateText="{errorState>/city/text}" change="onFieldChange"/>
 					<Label id="labelPostcode" text="{i18n>labelCreatePostcode}"/>
 					<Input id="postcode" value="{postcode}" maxLength="10" editable="{factSheetView>/editMode}" valueState="{errorState>/postcode/state}"
-																												valueStateText="{errorState>/postcode/text}"
-																												change="onPostcodeChange"/>
+						valueStateText="{errorState>/postcode/text}" change="onPostcodeChange"/>
 					<Label id="labelRegion" text="{i18n>labelCreateRegion}"/>
 					<Input id="region" value="{regionText}" editable="false" visible="{= ${factSheetView>/editMode} ? false : true }"/>
-					<Select id="selRegion" selectedKey="{region}"
-						items="{path: 'regions>/'}" 
-						visible="{factSheetView>/editMode}" 
-						width="100%">
+					<Select id="selRegion" selectedKey="{region}" items="{path: 'regions>/'}" visible="{factSheetView>/editMode}" width="100%">
 						<core:Item text="{regions>name}" key="{regions>key}"/>
 					</Select>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}"/>
 					<Input id="country" value="{countryText}" editable="false"/>
 				</f:content>
 			</f:SimpleForm>
-			
-			<Table id="rmaDocumentsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{i18n>noRmaDocumentsText}" busyIndicatorDelay="{searchView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false" updateFinished="onRmaUpdateFinished" items="{ path: 'Repairs' }">
+			<Table id="registrationsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{i18n>noRegistrationsText}"
+				busyIndicatorDelay="{factSheetView>/tableBusyDelay}" fixedLayout="false" updateFinished="onRegUpdateFinished"
+				items="{ path: 'ProductRegistrations' }" visible="{env>/minelabFlag}">
+				<headerToolbar>
+					<Toolbar>
+						<Title id="registrationsHeader" text="{factSheetView>/registrationsTitle}"/>
+						<ToolbarSpacer/>
+						<Button press="onRegistrationsRefresh" icon="sap-icon://refresh"/>
+						<Button press="onCreateRegistration" icon="sap-icon://add" text="{i18n>btnRegisterSerial}"/>
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column id="colBoxSerial">
+						<Text text="{i18n>colBoxSerial}" id="colBoxSerialHeader"/>
+					</Column>
+					<Column id="colBoxPart">
+						<Text text="{i18n>colBoxPart}" id="colBoxPartHeader"/>
+					</Column>
+					<Column id="colPurchaseDate">
+						<Text text="{i18n>colPurchaseDate}" id="colPurchaseDateHeader"/>
+					</Column>
+					<Column id="colWarrantyStart">
+						<Text text="{i18n>colWarrantyStartDate}" id="colWarrantyStartHeader"/>
+					</Column>
+					<Column id="colWarrantyEnd">
+						<Text text="{i18n>colWarrantyEndDate}" id="colWarrantyEndHeader"/>
+					</Column>
+					<Column id="colReportedStolen" hAlign="Center">
+						<Text text="{i18n>colReportedStolen}" id="colReportedStolenHeader" />
+					</Column>
+					<Column id="colTransferred" hAlign="Center">
+						<Text text="{i18n>colTransferred}" id="colTransferredHeader" />
+					</Column>
+					<Column id="colRegistrationId">
+						<Text text="{i18n>colRegistrationId}" id="colRegistrationIdHeader"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Navigation" press="onRegistrationSelect">
+						<cells>
+							<Text text="{boxSerial}" id="boxSerial"/>
+							<Text text="{boxDesc} ({boxPart})" id="boxDesc"/>
+							<Text text="{ path: 'purchasedDate', type: 'sap.ui.model.type.Date', formatOptions: {style: 'long' } }" id="purchasedDate"/>
+							<Text text="{ path: 'warrantyStartDate', type: 'sap.ui.model.type.Date', formatOptions: {style: 'long' } }" id="warrantyStartDate"/>
+							<Text text="{ path: 'warrantyEndDate', type: 'sap.ui.model.type.Date', formatOptions: {style: 'long' } }" id="warrantyEndDate"/>
+							<core:Icon src="sap-icon://warning2" color="red" visible="{= !!${reportedStolen} }" id="reportedStolen" alt="Transferred" />
+							<core:Icon src="sap-icon://step" color="green" visible="{transferred}" id="transferred"/>
+							<ObjectIdentifier title="{registrationId}" id="regId"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+			<Table id="rmaDocumentsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{i18n>noRmaDocumentsText}"
+				busyIndicatorDelay="{factSheetView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" fixedLayout="false"
+				updateFinished="onRmaUpdateFinished" items="{ path: 'Repairs' }">
 				<headerToolbar>
 					<Toolbar>
 						<Title id="tableHeader" text="{factSheetView>/rmaDocumentsTitle}"/>
 						<ToolbarSpacer/>
-						<Button press="onRmaRefresh" icon="sap-icon://refresh"/>
-						<Button press="onCreateRma" icon="sap-icon://add" text="{i18n>btnCreateRMA}" enabled="{isEditable}"/>
+						<Button press="onRmaRefresh" icon="sap-icon://refresh" />
+						<Button press="onCreateRma" icon="sap-icon://add" text="{i18n>btnCreateRMA}" />
 					</Toolbar>
 				</headerToolbar>
 				<columns>
@@ -71,7 +114,7 @@
 					</Column>
 					<Column id="colRmaStatus">
 						<Text text="{i18n>colRmaStatus}" id="colRmaStatusHeader"/>
-					</Column>					
+					</Column>
 					<Column id="colRmaSalesOrder">
 						<Text text="{i18n>colRmaSalesOrder}" id="colRmaSalesOrderHeader"/>
 					</Column>
@@ -89,18 +132,11 @@
 					<ColumnListItem type="Navigation" press="onRmaDocumentSelect">
 						<cells>
 							<ObjectIdentifier title="{ parts: [ {path: 'rmaId'}, {path: 'description'} ], formatter: '.formatter.rmaDocumentId' }" id="rmaId"/>
-							<ObjectStatus text="{statusText}" id="rmaStatus" state="{ parts: [ {path: 'status' }  ] , formatter: '.formatter.rmaStatus' }"/>
+							<ObjectStatus text="{statusText}" id="rmaStatus" state="{ parts: [ {path: 'status' } ] , formatter: '.formatter.rmaStatus' }"/>
 							<Text text="{salesOrder}" id="rmaSalesOrder"/>
 							<Text text="{delivery}" id="rmaDelivery"/>
 							<Text text="{invoice}" id="rmaBillingDocument"/>
-							<Text id="rmaDateCompleted"	
-								text="{
-									path: 'completedOn',
-									type: 'sap.ui.model.type.Date',
-									formatOptions: {
-										style: 'long'
-									} }" 
-							/>
+							<Text id="rmaDateCompleted" text="{ path: 'completedOn', type: 'sap.ui.model.type.Date', formatOptions: { style: 'long' } }"/>
 						</cells>
 					</ColumnListItem>
 				</items>

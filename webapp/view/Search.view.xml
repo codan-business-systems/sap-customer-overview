@@ -1,20 +1,19 @@
 <mvc:View controllerName="zcustoview.controller.Search" busy="false" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc"
 	xmlns:semantic="sap.m.semantic" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form">
-	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="true" title="{i18n>searchViewTitle}">
+	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="false" title="{i18n>searchViewTitle}">
 		<semantic:content>
 			<f:SimpleForm columnsL="1" editable="true" id="SearchQueryParams" labelSpanL="3" labelSpanM="3"
-				layout="ResponsiveGridLayout" minWidth="1024" backgroundDesign="Solid">
+				emptySpanL="4" emptySpanM="4"
+				layout="ResponsiveGridLayout" minWidth="1024" backgroundDesign="Transparent">
 				<f:content>
-					<HBox visible="false">
-						<Label id="labelSerialNo" text="{i18n>labelSearchSerialNo}" textAlign="Right" width="100%"/>
-						<Input id="Name" value="{searchView>/criteria/serialNo}" maxLength="40"/>
-					</HBox>
 					<Label id="labelAccount" text="{i18n>labelSearchAccount}" textAlign="Right" width="100%"/>
-					<Input id="Account" value="{searchView>/criteria/account}" maxLength="40"/>
+					<Input id="Account" value="{searchView>/criteria/name}" maxLength="40"/>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Right" width="100%"/>
 					<Select id="selCountry" selectedKey="{searchView>/criteria/country}" change="onCountrySelect" items="{path: 'countries>/', sorter: { path: 'name' } }">
 						<core:Item text="{countries>name}" key="{countries>key}"/>
 					</Select>
+					<Label id="labelSerialNo" text="{i18n>labelSearchSerialNo}" textAlign="Right" width="100%" visible="{env>/isMinelab}"/>
+					<Input id="Name" value="{searchView>/criteria/serialNumber}" maxLength="40" visible="{env>/isMinelab}"/>
 					<Label id="labelRMA" text="{i18n>labelSearchRMA}" textAlign="Right" width="100%"/>
 					<Input id="transaction" value="{searchView>/criteria/rmaId}" maxLength="6"/>
 					<Label id="labelPostcodeRegion" text="{i18n>labelSearchPostcodeRegion}" textAlign="Right" width="100%"/>
@@ -28,11 +27,11 @@
 					<Input id="email" value="{searchView>/criteria/email}" maxLength="255"/>
 				</f:content>
 			</f:SimpleForm>
-			<f:SimpleForm layout="ResponsiveGridLayout" minWidth="1024" id="customerSearch" editable="false" backgroundDesign="transparent" columnsL="1">
+			<f:SimpleForm layout="ResponsiveGridLayout" minWidth="1024" id="customerSearch" editable="false" backgroundDesign="Transparent" columnsL="1">
 				<f:content></f:content>
 			</f:SimpleForm>
 			<f:SimpleForm columnsL="1" editable="true" emptySpanL="4" emptySpanM="4" labelSpanL="3" labelSpanM="3" layout="ResponsiveGridLayout"
-				minWidth="1024" backgroundDesign="Solid">
+				minWidth="1024" backgroundDesign="Transparent">
 				<f:content>
 					<Label text="" width="100%"/>
 					<CheckBox id="chkIncludeArchived" text="{i18n>labelIncludeArchived}" selected="{searchView>/criteria/archived}" />
@@ -48,6 +47,7 @@
 					<Toolbar>
 						<Title id="tableHeader" text="{searchView>/searchTableTitle}"/>
 						<ToolbarSpacer/>
+						<Button text="{i18n>btnCreateCustomer}" press="onCreateCustomer" visible="{env>/minelabFlag}" icon="sap-icon://add" type="Emphasized"/>
 					</Toolbar>
 				</headerToolbar>
 				<columns>
@@ -76,8 +76,5 @@
 				</items>
 			</Table>
 		</semantic:content>
-		<semantic:customFooterContent>
-			<Button text="{i18n>btnCreateCustomer}" press="onCreateCustomer" visible="{env>/minelabFlag}"/>
-		</semantic:customFooterContent>
 	</semantic:FullscreenPage>
 </mvc:View>
