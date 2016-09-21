@@ -238,7 +238,7 @@ sap.ui.define([
 			this.setRegionFilter(sap.ui.getCore().byId("dlgSelRegion"), "");
 
 			// Reset the error states
-			BaseController.prototype.resetErrorStates();
+			BaseController.prototype.resetErrorStates(true);
 
 			this._oCreateCustomerDialog.open();
 
