@@ -315,6 +315,11 @@ sap.ui.define([
 		 * @public
 		 */
 		onSave: function() {
+			
+			// If we are not in edit mode, ignore the request
+			if (this.getModel("factSheetView").getProperty("/editMode") === false) {
+				return true;	
+			}
 			var oContext = this.getView().getBindingContext();
 
 			// First check all mandatory fields are entered
@@ -323,6 +328,17 @@ sap.ui.define([
 			// If all mandatory fields are entered, check that the postcode is valid.
 			if (bValid) {
 				bValid = this._checkPostcode();
+			}
+			
+			// Check that the email address is valid
+		    var bEmailValid = this._checkEmail();
+			if (!bEmailValid) {
+					this.getModel("errorState").setProperty("/email/state", sap.ui.core.ValueState.Error);
+    				this.getModel("errorState").setProperty("/email/text", this.getResourceBundle().getText("txtEmailIncorrectFormat"));
+			}
+			
+			if (bValid && !bEmailValid) {
+				bValid = false;
 			}
 
 			if (!bValid) {
@@ -443,13 +459,13 @@ sap.ui.define([
 			// Set the RMA Documents title
 			oViewModel.setProperty("/rmaDocumentsTitle",
 				this.getResourceBundle().getText("factSheetRmaDocuments",
-					this.byId("rmaDocumentsTable").getBinding("items").getLength())
+					this.byId("rmaDocumentsTable").getBinding("items").getLength().toString())
 			);
 
 			// Set the Registrations title
 			oViewModel.setProperty("/registrationsTitle",
 				this.getResourceBundle().getText("factSheetRegistrations",
-					this.byId("registrationsTable").getBinding("items").getLength())
+					this.byId("registrationsTable").getBinding("items").getLength().toString())
 			);
 
 			// Set up the region filter if the user hits edit mode
@@ -480,6 +496,15 @@ sap.ui.define([
 				oContext.getProperty("postcode")
 			);
 
+		},
+		
+		/**
+		 * Validate the email address in the current model
+		 * @private
+		 */
+		_checkEmail: function() {
+			var oContext = this.getView().getBindingContext();
+			return BaseController.prototype.validateEmail(oContext.getProperty("email"));
 		},
 
 		/**

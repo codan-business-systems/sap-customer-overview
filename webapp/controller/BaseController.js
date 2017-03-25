@@ -18,7 +18,7 @@ sap.ui.define([
       "name",
       "street",
       "city",
-      "postcode",
+     // "postcode",
       "country"
     ],
 
@@ -196,6 +196,32 @@ sap.ui.define([
       this.getModel("errorState").setProperty(sValueStatePath, valueState);
       this.getModel("errorState").setProperty(sValueStateTextPath, valueStateText);
     },
+    
+    /**
+     * Triggered when an email address field is changed
+     * Resets the value state on the input box if a value was entered
+     * Validates the email address is of the correct format
+     * @param {Object} oEvent event parameters
+     * @public
+     */
+    onEmailChange: function(oEvent) {
+    	
+    	var valueState = ValueState.None;
+    	var valueStateText = "";
+		
+    	var oControl = sap.ui.getCore().byId(oEvent.getParameters().id);
+    	var sValueStatePath = oControl.getBindingPath("valueState");
+    	var sValueStateTextPath = oControl.getBindingPath("valueStateText");
+
+        if (!this.validateEmail(oEvent.getParameters().newValue)) {
+                valueState = ValueState.Error;
+                valueStateText = this.getResourceBundle().getText("txtEmailIncorrectFormat");
+        }
+    	
+    	this.getModel("errorState").setProperty(sValueStatePath, valueState);
+    	this.getModel("errorState").setProperty(sValueStateTextPath, valueStateText);
+    	
+    },
 
     /**
      * Raises an error message dialog with the message text specified
@@ -267,12 +293,16 @@ sap.ui.define([
           text: ""
         },
         postcode: {
-          state: valueState,
+          state: ValueState.None,
           text: ""
         },
         country: {
           state: valueState,
           text: ""
+        },
+        email: {
+        	state: ValueState.None,
+        	text: ""
         }
       });
 
@@ -338,6 +368,10 @@ sap.ui.define([
      * @returns {Boolean} True if valid
      */
     validatePostcode: function(oCountries, sCountryKey, sPostcode) {
+    	
+      if (!sPostcode) {
+      	sPostcode = "";
+      }
       var bValid = postcodeValidator.validatePostcode(oCountries,
         sCountryKey,
         sPostcode
@@ -351,6 +385,23 @@ sap.ui.define([
       }
 
       return bValid;
+    },
+    
+    
+    /**
+     * Validates that the email address is of the correct format
+     * @param {String} email: email address to verify
+     * @returns {Boolean} true if email is valid
+     * @public
+     */
+    validateEmail: function(email) {
+		var emailRegex = /^\w+[\w-+\.]*\@\w+([-\.]\w+)*\.[a-zA-Z]{2,}$/;
+		
+		if (!email) {
+			return true;
+		}
+		
+		return email.match(emailRegex);
     }
 
   });

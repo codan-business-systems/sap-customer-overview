@@ -7,11 +7,29 @@ sap.ui.define([
 		validatePostcode: function(countryModel, countryKey, postcode) {
 			
 			// Find the country parameters in the model via the country key
+			var context = this._getContext(countryKey, countryModel.getData());
+
+			
+			/* Can't use below (thanks IE)
 			var context = countryModel.getData().find(function(oEntry) 
 				{ return oEntry.key === countryKey; }
 			);
+			*/
 
 			return this.validateSAPPostcode(postcode, countryKey, context.postcodeMax, context.postcodeRule);
+		},
+		
+		_getContext: function(countryKey, aCountries) {
+			
+			var result = "";
+			
+			for (var i = 0; i < aCountries.length; i++) {
+				if (aCountries[i].key === countryKey) {
+					result = aCountries[i];
+					return result;
+				}
+			}
+			
 		},
 
 		//validate a postcode according to SAP postcode rules

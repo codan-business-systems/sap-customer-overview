@@ -170,6 +170,10 @@ sap.ui.define([
 				aFilterLength = aFilters.length;
 			}
 
+			// City
+			aFilters = this._addFilter("city", aFilters);
+			aFilterLength = aFilters.length;
+
 			if (aFilters.length === 0) {
 				this.raiseErrorDialog(this.getResourceBundle().getText("noSearchCriteria"));
 				return;
@@ -287,6 +291,17 @@ sap.ui.define([
 			if (bValid) {
 				bValid = this._checkPostcode();
 			}
+			
+			// Also check that the email is valid
+		    var bEmailValid = this._checkEmail();
+			if (!bEmailValid) {
+					this.getModel("errorState").setProperty("/email/state", sap.ui.core.ValueState.Error);
+    				this.getModel("errorState").setProperty("/email/text", this.getResourceBundle().getText("txtEmailIncorrectFormat"));
+			}
+			
+			if (bValid && !bEmailValid) {
+				bValid = false;
+			}
 
 			if (!bValid) {
 
@@ -297,11 +312,15 @@ sap.ui.define([
 				this.raiseErrorDialog(this.getResourceBundle().getText("msgEnterMandatoryFields"));
 				return bValid;
 			}
+
+			sap.ui.core.BusyIndicator.show();
 			this.getModel().submitChanges({
 				success: function() {
-					
+
 					// Get the new customer number
 					var sAccount = this._oContext.getObject().account;
+
+					sap.ui.core.BusyIndicator.hide();
 
 					// Show success message
 					MessageToast.show(this.getResourceBundle().getText("msgCustomerCreated", sAccount), {
@@ -360,11 +379,22 @@ sap.ui.define([
 		_addFilter: function(sProperty, aFilters) {
 
 			var sValue = this.getModel("searchView").getProperty("/criteria/" + sProperty);
+			/* Remove *'s at the start or end of the string */
+			sValue = sValue.replace(new RegExp("^[\*]", 'g'), "");
+			sValue = sValue.replace(new RegExp("[\*]$", 'g'), "");
 			if (sValue && sValue !== "") {
-				aFilters.push(new sap.ui.model.Filter(sProperty, this._deriveFilterOperator(sProperty, sValue), sValue.replace(new RegExp("[\*]+",
-					'g'), "")));
+				aFilters.push(new sap.ui.model.Filter(sProperty, this._deriveFilterOperator(sProperty, sValue), sValue));
 			}
 			return aFilters;
+		},
+		
+		/**
+		 * Validate the email address in the current model
+		 * @private
+		 */
+		_checkEmail: function() {
+			var oContext = this.getView().getBindingContext();
+			return BaseController.prototype.validateEmail(oContext.getProperty("email"));
 		},
 
 		/**
@@ -404,8 +434,13 @@ sap.ui.define([
 				if (sSearch.search(/^[^\*].+\*$/) === 0) {
 					oResult = sap.ui.model.FilterOperator.StartsWith;
 				} else {
-					// Just use contains
-					oResult = sap.ui.model.FilterOperator.Contains;
+
+					if (sParam === "name" && /^\d+$/.test(sSearch)) {
+						oResult = sap.ui.model.FilterOperator.EQ;
+					} else {
+						// Just use contains
+						oResult = sap.ui.model.FilterOperator.Contains;
+					}
 				}
 
 			}

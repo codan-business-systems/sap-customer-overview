@@ -9,7 +9,8 @@ sap.ui.define([
 		return UIComponent.extend("zcustoview.Component", {
 
 			metadata : {
-				manifest: "json"
+				manifest: "json",
+				includes: ["css/custom.css"]
 			},
 
 			/**

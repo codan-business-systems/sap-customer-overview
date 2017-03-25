@@ -3,39 +3,51 @@
 		<semantic:content>
 			<ObjectHeader title="{name} ({account})" condensed="true" class="zSapMOHBgTransparent" id="factSheetObjectHeader" backgroundDesign="Transparent"/>
 			<MessageStrip text="{isEditableReason}" visible="{= ${isEditable} ? false : true }" showIcon="true" showCloseButton="true" type="Error"/>
-			<f:SimpleForm columnsL="2" columnsM="2" editable="true" emptySpanL="0" emptySpanM="0" adjustLabelSpan="false" id="modifyCustomerForm1" labelSpanL="4" labelSpanM="12" layout="ResponsiveGridLayout" backgroundDesign="Solid" width="auto" class="zSimpleFormMarginCentre">
-				<f:content>
-					<core:Title text="{i18n>factSheetContactTitle}"/>
-					<Label id="labelTitle" text="{i18n>labelCreateTitle}"/>
-					<Input id="title" value="{title}" editable="{factSheetView>/editMode}"/>
-					<Label id="labelAccount" text="{i18n>labelCreateAccountName}"/>
-					<Input id="accountName" value="{name}" maxLength="40" editable="false" valueState="{errorState>/name/state}" valueStateText="{errorState>/name/text}" change="onFieldChange"/>
-					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}"/>
-					<Input id="telephone" value="{telephone}" maxLength="16" editable="{factSheetView>/editMode}"/>
-					<Label id="labelMobile" text="{i18n>labelCreateMobile}"/>
-					<Input id="mobile" value="{mobile}" maxLength="16" editable="{factSheetView>/editMode}"/>
-					<Label id="labelEmail" text="{i18n>labelSearchEmail}"/>
-					<Input id="email" value="{email}" maxLength="255" editable="{factSheetView>/editMode}"/>
-					<Toolbar>
-						<Title text="{i18n>factSheetAddressTitle}"/>
-						<ToolbarSpacer/>
-						<Button press="onSave" text="{i18n>btnSave}" enabled="{factSheetView>/editMode}" icon="sap-icon://save"/>
-						<Button press="onToggleEditMode" text="{= ${factSheetView>/editMode} ? 'Cancel' : 'Edit' }" icon="{= ${factSheetView>/editMode} ? 'sap-icon://decline' : 'sap-icon://edit' }" enabled="{isEditable}"/>
-					</Toolbar>
-					<Label id="labelStreet" text="{i18n>labelSearchStreet}"/>
-					<Input id="street" value="{street}" maxLength="60" editable="{factSheetView>/editMode}" valueState="{errorState>/street/state}" valueStateText="{errorState>/street/text}" change="onFieldChange"/>
-					<Label id="labelCity" text="{i18n>labelSearchCity}"/>
-					<Input id="city" value="{city}" maxLength="25" editable="{factSheetView>/editMode}" valueState="{errorState>/city/state}" valueStateText="{errorState>/city/text}" change="onFieldChange"/>
-					<Label id="labelPostcode" text="{i18n>labelCreatePostcode}"/>
-					<Input id="postcode" value="{postcode}" maxLength="10" editable="{factSheetView>/editMode}" valueState="{errorState>/postcode/state}" valueStateText="{errorState>/postcode/text}" change="onPostcodeChange"/>
-					<Label id="labelRegion" text="{i18n>labelCreateRegion}"/>
-					<Input id="region" value="{regionText}" editable="false" visible="{= ${factSheetView>/editMode} ? false : true }"/>
-					<Select id="selRegion" selectedKey="{region}" items="{path: 'regions>/'}" visible="{factSheetView>/editMode}" width="100%">
-						<core:Item text="{regions>name}" key="{regions>key}"/>
-					</Select>
-					<Label id="labelCountry" text="{i18n>labelSearchCountry}"/>
-					<Input id="country" value="{countryText}" editable="false"/>
-				</f:content>
+			<f:SimpleForm editable="true" emptySpanL="0" emptySpanM="0" adjustLabelSpan="false" id="modifyCustomerFormMain" layout="ResponsiveGridLayout" backgroundDesign="Solid" width="auto" class="zSimpleFormMarginCentre" maxContainerCols="4" labelSpanL="4" labelSpanS="4">
+				<f:content/>
+				<f:SimpleForm editable="true" emptySpanL="0" emptySpanM="0" adjustLabelSpan="false" id="modifyCustomerForm1" layout="ResponsiveGridLayout" backgroundDesign="Solid" width="auto" maxContainerCols="4" columnsM="2" columnsXL="2" emptySpanXL="0" labelSpanL="4" labelSpanS="4" labelSpanXL="4">
+					<f:toolbar>
+						<Toolbar>
+							<Title text="{i18n>factSheetContactTitle}"/>
+						</Toolbar>
+					</f:toolbar>
+					<f:content>
+						<Label id="labelTitle" text="{i18n>labelCreateTitle}" labelFor="title"/><Input id="title" value="{title}" editable="{factSheetView>/editMode}"/>
+						<Label id="labelAccount" text="{i18n>labelCreateAccountName}"/>
+						<Input id="accountName" value="{name}" maxLength="40" editable="false" valueState="{errorState>/name/state}" valueStateText="{errorState>/name/text}" change="onFieldChange"/>
+						<Label id="labelTelephone" text="{i18n>labelSearchTelephone}"/>
+						<Input id="telephone" value="{telephone}" maxLength="16" editable="{factSheetView>/editMode}"/>
+						<Label id="labelMobile" text="{i18n>labelCreateMobile}"/>
+						<Input id="mobile" value="{mobile}" maxLength="16" editable="{factSheetView>/editMode}"/>
+						<Label id="labelEmail" text="{i18n>labelSearchEmail}"/>
+						<Input id="email" value="{email}" maxLength="255" editable="{factSheetView>/editMode}" valueState="{errorState>/email/state}" valueStateText="{errorState>/email/text}" change="onEmailChange"/>
+					</f:content>
+				</f:SimpleForm>
+				<f:SimpleForm columnsL="1" columnsM="1" editable="true" emptySpanL="0" emptySpanM="0" adjustLabelSpan="false" id="modifyCustomerForm2" labelSpanL="4" labelSpanM="4" layout="ResponsiveGridLayout" backgroundDesign="Solid" width="auto" maxContainerCols="4" labelSpanS="4" labelSpanXL="4">
+					<f:toolbar>
+						<Toolbar>
+							<Title text="{i18n>factSheetAddressTitle}"/>
+							<ToolbarSpacer/>
+							<Button press="onSave" text="{i18n>btnSave}" enabled="{factSheetView>/editMode}" icon="sap-icon://save"/>
+							<Button press="onToggleEditMode" text="{= ${factSheetView>/editMode} ? 'Cancel' : 'Edit' }" icon="{= ${factSheetView>/editMode} ? 'sap-icon://decline' : 'sap-icon://edit' }" enabled="{isEditable}"/>
+						</Toolbar>
+					</f:toolbar>
+					<f:content>
+						<Label id="labelStreet" text="{i18n>labelSearchStreet}"/>
+						<Input id="street" value="{street}" maxLength="60" editable="{factSheetView>/editMode}" valueState="{errorState>/street/state}" valueStateText="{errorState>/street/text}" change="onFieldChange"/>
+						<Label id="labelCity" text="{i18n>labelSearchCity}"/>
+						<Input id="city" value="{city}" maxLength="25" editable="{factSheetView>/editMode}" valueState="{errorState>/city/state}" valueStateText="{errorState>/city/text}" change="onFieldChange"/>
+						<Label id="labelPostcode" text="{i18n>labelCreatePostcode}"/>
+						<Input id="postcode" value="{postcode}" maxLength="10" editable="{factSheetView>/editMode}" valueState="{errorState>/postcode/state}" valueStateText="{errorState>/postcode/text}" change="onPostcodeChange"/>
+						<Label id="labelRegion" text="{i18n>labelCreateRegion}"/>
+						<Input id="region" value="{regionText}" editable="false" visible="{= ${factSheetView>/editMode} ? false : true }"/>
+						<Select id="selRegion" selectedKey="{region}" items="{path: 'regions>/'}" visible="{factSheetView>/editMode}" width="100%">
+							<core:Item text="{regions>name}" key="{regions>key}"/>
+						</Select>
+						<Label id="labelCountry" text="{i18n>labelSearchCountry}"/>
+						<Input id="country" value="{countryText}" editable="false"/>
+					</f:content>
+				</f:SimpleForm>
 			</f:SimpleForm>
 			<Table id="registrationsTable" width="auto" class="sapUiResponsiveMargin" noDataText="{i18n>noRegistrationsText}" busyIndicatorDelay="{factSheetView>/tableBusyDelay}" fixedLayout="false" updateFinished="onRegUpdateFinished" items="{ path: 'ProductRegistrations' }" visible="{env>/minelabFlag}">
 				<headerToolbar>
@@ -75,11 +87,11 @@
 				<items>
 					<ColumnListItem type="Navigation" press="onRegistrationSelect">
 						<cells>
-							<Text text="{boxSerial}" id="boxSerial"/>
+							<Text text="{boxSerial}" id="boxSerial" wrapping="false"/>
 							<Text text="{boxDesc} ({boxPart})" id="boxDesc"/>
-							<Text text="{ path: 'purchasedDate', type: 'sap.ui.model.type.Date', formatOptions: {style: 'long' } }" id="purchasedDate"/>
-							<Text text="{ path: 'warrantyStartDate', type: 'sap.ui.model.type.Date', formatOptions: {style: 'long' } }" id="warrantyStartDate"/>
-							<Text text="{ path: 'warrantyEndDate', type: 'sap.ui.model.type.Date', formatOptions: {style: 'long' } }" id="warrantyEndDate"/>
+							<Text text="{ path: 'purchasedDate', type: 'sap.ui.model.type.Date', formatOptions: {style: 'long' } }" id="purchasedDate" wrapping="false"/>
+							<Text text="{ path: 'warrantyStartDate', type: 'sap.ui.model.type.Date', formatOptions: {style: 'long' } }" id="warrantyStartDate" wrapping="false"/>
+							<Text text="{ path: 'warrantyEndDate', type: 'sap.ui.model.type.Date', formatOptions: {style: 'long' } }" id="warrantyEndDate" wrapping="false"/>
 							<core:Icon src="sap-icon://warning2" color="red" visible="{= !!${reportedStolen} }" id="reportedStolen" alt="Transferred"/>
 							<core:Icon src="sap-icon://step" color="green" visible="{transferred}" id="transferred" tooltip="{i18n>transferredTooltip}"/>
 							<ObjectIdentifier title="{registrationId}" id="regId"/>
