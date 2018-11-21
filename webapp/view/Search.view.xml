@@ -7,11 +7,11 @@
 				layout="ResponsiveGridLayout" minWidth="1024" backgroundDesign="Transparent">
 				<f:content>
 					<Label id="labelAccount" text="{i18n>labelSearchAccount}" textAlign="Right" width="100%"/>
-					<Input id="Account" value="{searchView>/criteria/name}" maxLength="40"/>
+					<Input id="Account" value="{searchView>/criteria/name}" maxLength="40" submit="onSearch"/>
 					<Label id="labelSerialNo" text="{i18n>labelSearchSerialNo}" textAlign="Right" width="100%" visible="{env>/minelabFlag}"/>
-					<Input id="Name" value="{searchView>/criteria/serialNumber}" maxLength="40" visible="{env>/minelabFlag}"/>
+					<Input id="Name" value="{searchView>/criteria/serialNumber}" maxLength="40" visible="{env>/minelabFlag}" submit="onSearch"/>
 					<Label id="labelRMA" text="{i18n>labelSearchRMA}" textAlign="Right" width="100%"/>
-					<Input id="transaction" value="{searchView>/criteria/rmaId}" maxLength="128"/>
+					<Input id="transaction" value="{searchView>/criteria/rmaId}" maxLength="128" submit="onSearch"/>
 					<Label id="labelCountry" text="{i18n>labelSearchCountry}" textAlign="Right" width="100%"/>
 					<Select id="selCountry" selectedKey="{searchView>/criteria/country}" change="onCountrySelect" items="{path: 'countries>/', sorter: { path: 'name' } }">
 						<core:Item text="{countries>name}" key="{countries>key}"/>
@@ -19,14 +19,14 @@
 					<Label id="labelCity" text="{i18n>labelSearchCity}" textAlign="Right" width="100%"/>
 					<Input id="city" value="{searchView>/criteria/city}" maxLength="25"/>
 					<Label id="labelPostcodeRegion" text="{i18n>labelSearchPostcodeRegion}" textAlign="Right" width="100%"/>
-					<Input id="postcode" value="{searchView>/criteria/postcode}" maxLength="10"/>
+					<Input id="postcode" value="{searchView>/criteria/postcode}" maxLength="10" submit="onSearch"/>
 					<Select id="selRegion" selectedKey="{searchView>/criteria/region}" items="{path: 'regions>/', sorter: { path: 'name' } }">
 						<core:Item text="{regions>name}" key="{regions>key}"/>
 					</Select>
 					<Label id="labelTelephone" text="{i18n>labelSearchTelephone}" textAlign="Right" width="100%"/>
-					<Input id="telephone" value="{searchView>/criteria/telephone}" maxLength="16"/>
+					<Input id="telephone" value="{searchView>/criteria/telephone}" maxLength="16" submit="onSearch"/>
 					<Label id="labelEmail" text="{i18n>labelSearchEmail}" textAlign="Right" width="100%"/>
-					<Input id="email" value="{searchView>/criteria/email}" maxLength="255"/>
+					<Input id="email" value="{searchView>/criteria/email}" maxLength="255" submit="onSearch"/>
 				</f:content>
 			</f:SimpleForm>
 			<f:SimpleForm layout="ResponsiveGridLayout" minWidth="1024" id="customerSearch" editable="false" backgroundDesign="Transparent" columnsL="1">
